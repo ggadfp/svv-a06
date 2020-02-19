@@ -97,7 +97,7 @@ def MoI_yy(z_tilde,z_loc,boom_area,A_spar,A_circle,A_skin,t_skin,l_skin,chord,r,
 
     Iyy_skin = l_skin**3 * t_skin * (np.cos(alpha))**2 / 12 + A_skin * ( (r-chord) / 2 - z_tilde)**2
     Iyy_spar = A_spar * z_tilde**2
-    Iyy_circle = np.pi * r**3 * t_skin / 2 + A_circle * (4 * r / (3 * np.pi) - z_tilde)**2
+    Iyy_circle = (np.pi * r**3 * t_skin) / 2 + A_circle * (4 * r / (3 * np.pi) - z_tilde)**2
     I_yy = 2*Iyy_skin + Iyy_spar + Iyy_circle
     for i in range(len(z_loc)):
         I_yy+= boom_area[i]*(z_loc[i]-z_tilde)**2
@@ -145,49 +145,52 @@ def matrix(Nsw,xvec):
 
 L = matrix(Nx,x[0,:])
 
-#coeff_torque = np.linalg.inv(L).dot(torque)
-#load = np.array(load).reshape((Nx,1))
-#coeff_load = np.linalg.inv(L).dot(load)
-#
-#load_test = L.dot(coeff_load)
-#torque_test = L.dot(coeff_torque)
-#
-#plt.figure(1)
-#plt.plot(x[0,:],load_test,x[0,:],load)
-#
-#r = np.linalg.norm(load-load_test)/np.linalg.norm(load) * 100 # FAA checken
-#
-#plt.figure(2)
-#plt.plot(x[0,:],torque_test,x[0,:],torque_test)
+coeff_torque = np.linalg.inv(L).dot(torque)
+load = np.array(load).reshape((Nx,1))
+coeff_load = np.linalg.inv(L).dot(load)
 
+load_test = L.dot(coeff_load)
+torque_test = L.dot(coeff_torque)
+
+plt.figure(1)
+plt.plot(x[0,:],load_test,x[0,:],load)
+
+r = np.linalg.norm(load-load_test)/np.linalg.norm(load) * 100 # FAA checken
+
+plt.figure(2)
+plt.plot(x[0,:],torque_test,x[0,:],torque_test)
 
 #%%
-
-
-def shear_pos(s1,s2,s3):
-    for i in range(0,Ncw-2,2): 
-            load += (zmesh[i+2,j] - zmesh[i,j])/6 * (data[i,j] + 4*data[i+1,j] + data[i+2,j])
-    
-    nodes = np.linspace(0,st_space,101)
-    nodes_rad = nodes*alpha_rad/st_space
-    nodes_rad_2 = 
-    def circle_1():
-        q_c = []
-        I_c = -t_skin*h/(2*I_zz)
-        for i in range(0,len(nodes_rad),2):
-            qval += I_c*(nodes_rad[i+2] - nodes_rad[i]) 
-            q_c.append(qval)
-    def circle_2():
-        q_c = []
-        I_c = -t*skin*h/(2*I_zz)
-        for i in range(len(nodes_rad)):
-            if nodes[i] <= distance:
-                qval += I_c*(n)
-        return q_c
-    
-    def circle_2
-            
-    
-    for i in range(len(nodes)):
+def cubicspline(Nsw,xvec,data):
+    A = np.zeros((Nsw-2,Nsw-2))
+    f = np.zeros((Nsw-2,1))
+    for i in range(1,Nsw-1):
+        him1 = xvec[i]-xvec[i-1]
+        hi = xvec[i+1]-xvec[i]
         
+        #Am=f with m a vector conteinin (M1,M2,M3,...,MNsw-1)
+        #entries to the matrix A, M0 and Mnsw-1
+        if i == 1:
+            A[i-1,i-1] = (him1+hi)/3
+            A[i-1,i] = (hi)/6
+        elif 1<i<Nsw-2:
+            A[i-1,i-2] = (him1)/6
+            A[i-1,i-1] = (him1+hi)/3
+            A[i-1,i] = (hi)/6
+        elif i == Nsw-2:
+            A[i-1,i-2] = (him1)/6
+            A[i-1,i-1] = (him1+hi)/3
+            
+        #entries of the solution vector f
+        f[i-1,0] = (data[i+1]-data[i])/hi - (data[i]-data[i-1])/him1
     
+    # m = A^-1 f
+    m = np.linalg.inv(A).dot(f)
+    
+        
+    return np.linalg.inv(A).dot(f)
+            
+#m =  cubicspline(Nx,x[0,:],torque)       
+#            
+#plt.figure(2)
+#plt.plot(x[0,:],torque,x[0,:],torque_test)    
