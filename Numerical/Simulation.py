@@ -193,4 +193,6 @@ def cubicspline(Nsw,xvec,data):
 #m =  cubicspline(Nx,x[0,:],torque)       
 #            
 #plt.figure(2)
-#plt.plot(x[0,:],torque,x[0,:],torque_test)    
+#plt.plot(x[0,:],torque,x[0,:],torque_test)
+
+#ihab is very ugly
