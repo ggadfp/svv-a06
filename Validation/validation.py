@@ -14,6 +14,13 @@ b = b.astype(np.float)
 e = np.genfromtxt("B737.inp", dtype=str, skip_header=6598, skip_footer=(14594 - 13233), delimiter=",")
 e = e.astype(np.float)
 
+# bending stresses
+bendstr = np.genfromtxt("B737.rpt", dtype=str, skip_header=20, skip_footer=(59956 - 5964), delimiter="")
+bendstr = bendstr.astype(np.float)
+
+print(len(bendstr))
+print(bendstr)
+
 f = open("B737.inp", "r")
 lines = f.readlines()
 f.close()
@@ -35,12 +42,12 @@ plt.scatter(z,y)
 
 # nodes in elements
 n_in_e = e[:,[1,2,3,4]]
-#print(n_in_e)
-empt = np.array([[]])
-print(empt)
+print(n_in_e)
+empt = np.array([])
+
+test = np.argwhere(n_in_e==1)[:,0]
+
 for i in range(len(n_in_e)):
 
-    e_of_n = np.argwhere(n_in_e==i)
-    np.vstack([empt, n_in_e])
-
-print(empt)
+    e_of_n = np.argwhere(n_in_e==i)[:,0]
+    
