@@ -129,36 +129,37 @@ for i in range(Nx):
     torque[i] = load[i]*pointapp[i]
 
 #%%
-
-def matrix(Nsw,xvec):
-    A = np.zeros((Nsw,Nsw))
-    A[:,0] = 1
-    xvec_new = (2*np.pi)/(xvec[-1] - xvec[0]) * xvec
-    for i in range(Nsw):
-        for j in range(1,Nsw):
-            if 1<=j<=20:
-                A[i,j] = np.cos(j*xvec_new[i])
-            else:
-                A[i,j] = np.sin(j*xvec_new[i])
+#  WE'RE NOT USING THIS
+    
+# def matrix(Nsw,xvec):
+#     A = np.zeros((Nsw,Nsw))
+#     A[:,0] = 1
+#     xvec_new = (2*np.pi)/(xvec[-1] - xvec[0]) * xvec
+#     for i in range(Nsw):
+#         for j in range(1,Nsw):
+#             if 1<=j<=20:
+#                 A[i,j] = np.cos(j*xvec_new[i])
+#             else:
+#                 A[i,j] = np.sin(j*xvec_new[i])
                 
-    return np.matrix(A)
+#     return np.matrix(A)
 
-L = matrix(Nx,x[0,:])
+# L = matrix(Nx,x[0,:])
 
-coeff_torque = np.linalg.inv(L).dot(torque)
-load = np.array(load).reshape((Nx,1))
-coeff_load = np.linalg.inv(L).dot(load)
+# coeff_torque = np.linalg.inv(L).dot(torque)
+# load = np.array(load).reshape((Nx,1))
+# coeff_load = np.linalg.inv(L).dot(load)
 
-load_test = L.dot(coeff_load)
-torque_test = L.dot(coeff_torque)
+# load_test = L.dot(coeff_load)
+# torque_test = L.dot(coeff_torque)
 
-plt.figure(1)
-plt.plot(x[0,:],load_test,x[0,:],load)
+# plt.figure(1)
+# plt.plot(x[0,:],load_test,x[0,:],load)
 
-r = np.linalg.norm(load-load_test)/np.linalg.norm(load) * 100 # FAA checken
+# r = np.linalg.norm(load-load_test)/np.linalg.norm(load) * 100 # FAA checken
 
-plt.figure(2)
-plt.plot(x[0,:],torque_test,x[0,:],torque_test)
+# plt.figure(2)
+# plt.plot(x[0,:],torque_test,x[0,:],torque_test)
 
 #%%
 def cubicspline(Nsw,xvec,data):
