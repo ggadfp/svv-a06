@@ -121,8 +121,8 @@ Izz = MoI_zz(Y_locations,Boom_area,Asp,tsp,Ask_semi,Ask_incl,tsk,lsk,Ca,h/2,beta
 #%%
 
 
-x,z = meshCreator(Nz,Nx,Ca,la,h)
-load,pointapp = zload_zpoint(Nz,Nx,z)
+x,z = readAeroload.meshCreator(Nz,Nx,Ca,la,h)
+load,pointapp = readAeroload.zload_zpoint(Nz,Nx,z)
 
 torque = np.zeros((Nx,1))
 for i in range(Nx):
@@ -185,14 +185,28 @@ def cubicspline(Nsw,xvec,data):
         f[i-1,0] = (data[i+1]-data[i])/hi - (data[i]-data[i-1])/him1
     
     # m = A^-1 f
-    m = np.linalg.inv(A).dot(f)
+    m = np.vstack(([0],np.linalg.inv(A).dot(f),[0]))
     
+    s_coeff = np.zeros([Nsw-1,4])
+    for k in range(Nsw-1):
+        hk = xvec[k+1]-xvec[k] #spacing between point k and the next one
         
-    return np.linalg.inv(A).dot(f)
-            
-#m =  cubicspline(Nx,x[0,:],torque)       
-#            
-#plt.figure(2)
-#plt.plot(x[0,:],torque,x[0,:],torque_test)
+        s_coeff[k,0] = data[k] #constant term
+        s_coeff[k,1] = (data[k+1]-data[k])/hk-hk/3*m[k]-hk/6*m[k+1] #linear term (is multiplied by (x-xk))
+        s_coeff[k,2] = m[k]/2 #quadratic term (is multiplied by (x-xk)^2)
+        s_coeff[k,3] = (m[k+1]-m[k])/(6*hk) #cubic term (is multiplied by (x-xk)^3)
+    
+    return s_coeff
+           
+s_coeff_torque =  cubicspline(Nx,x[0,:],torque)
+s_coeff_load = cubicspline(Nx,x[0,:],load)
 
-#ihab is very ugly
+# #checking if the splines have points that connect
+# r_splinecheck = [0]*(Nx-1)
+# for i in range(Nx-2):
+#     si = s_coeff_torque[i,0] + s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) + s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 + s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3
+#     r[i] = abs(si-s_coeff_torque[i+1,0])
+    
+    
+    
+   
