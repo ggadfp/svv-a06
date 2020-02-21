@@ -53,6 +53,10 @@ angle_deg = angle_rad *180/np.pi # Same angle, but in degrees
 beta_rad = np.arctan2((h/2),(Ca-h/2)) # Angle of the inclined section
 beta_deg = beta_rad*180/np.pi # Same angle, but in degrees
 
+# Material properties
+E = 72.9e09 # [Pa] Young's modulus
+G = 27.1e09 # [Pa] Shear modulus
+
 # Other parameters
 bridge = (-(np.pi/2 - angle_rad)*h/2 + deltast) # Bridging distance between semi-circular and inclined section
 Boom_area = nst*[Ast] # All boom areas, where index 0 indicates the boom at the symmetry axis, going ccw
@@ -199,18 +203,40 @@ def cubicspline(Nsw,xvec,data):
     
     return s_coeff
            
-s_coeff_torque =  cubicspline(Nx,x[0,:],torque)
-s_coeff_load = cubicspline(Nx,x[0,:],load)
 
-# #checking if the splines have points that connect
-# r_splinecheck = [0]*(Nx-1)
-# for i in range(Nx-2):
-#     si = (s_coeff_torque[i,0] +
-#           s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) +
-#           s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 +
-#           s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3)
-#     r_splinecheck[i] = abs(si-s_coeff_torque[i+1,0])
+ #%%
+def linearspline(Nsw,xvec,data):
     
+    s_coeff = np.zeros([Nsw-1,4])
+    for k in range(Nsw-1):
+        
+        s_coeff[k,0] = data[k] #constant term
+        s_coeff[k,1] = (data[k+1]-data[k])/(xvec[k+1]-xvec[k]) #linear term (is multiplied by (x-xk))
+        s_coeff[k,2] = 0 #quadratic term (is multiplied by (x-xk)^2)
+        s_coeff[k,3] = 0 #cubic term (is multiplied by (x-xk)^3)
+        
+    return s_coeff
     
+#%%
     
+s_coeff_torque =  linearspline(Nx,x[0,:],torque)
+s_coeff_load = linearspline(Nx,x[0,:],load)
+
+#checking if the splines have points and derivatives that connect
+r_1 = [0]*(Nx-1)
+r_2 = [0]*(Nx-1)
+r_3 = [0]*(Nx-1)
+for i in range(Nx-2):
+    si = (s_coeff_torque[i,0] +
+          s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) +
+          s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 +
+          s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3)
+    sid = (s_coeff_torque[i,1] +
+          2*s_coeff_torque[i,2]*(x[0,i+1]-x[0,i]) +
+          3*s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**2)
+    sidd = (2*s_coeff_torque[i,2] +
+          6*s_coeff_torque[i,3]*(x[0,i+1]-x[0,i]))
+    r_1[i] = abs(si-s_coeff_torque[i+1,0])    
+    r_2[i] = abs(si-s_coeff_torque[i+1,1])
+    r_3[i] = abs(si-2*s_coeff_torque[i+1,2])
    
