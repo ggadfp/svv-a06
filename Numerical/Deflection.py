@@ -15,7 +15,7 @@ def int_spline(s_coeff,degree,xloc,xvec):
     
     #adding the beginning and end points
     xvec = np.vstack(([0],xvec.reshape((len(xvec),1)),[sim.la]))
-    s_coeff = np.vstack((s_coeff[0],s_coeff,s_coeff[-1]))
+    s_coeff = np.vstack(([s_coeff[0,0],0,0,0],s_coeff,[s_coeff[-1,0],0,0,0]))
     
     #finding the index of the last node before the xloc
     diff = np.array(xvec - xloc)
@@ -30,23 +30,10 @@ def int_spline(s_coeff,degree,xloc,xvec):
     
     #this one is the value of the function at that point
     if degree == 0:
-        print(s_coeff[idx_fullspl,0],
-              s_coeff[idx_fullspl,1]/2*(xloc-xvec[idx_fullspl]),
-              s_coeff[idx_fullspl,2]/3*(xloc-xvec[idx_fullspl])**2,
-              s_coeff[idx_fullspl,3]/4*(xloc-xvec[idx_fullspl])**3)
         full_sum = (s_coeff[idx_fullspl,0] +
-                    s_coeff[idx_fullspl,1]/2*(xloc-xvec[idx_fullspl]) +
-                    s_coeff[idx_fullspl,2]/3*(xloc-xvec[idx_fullspl])**2 +
-                    s_coeff[idx_fullspl,3]/4*(xloc-xvec[idx_fullspl])**3)
-            # full_sum = (s_coeff_torque[i,0] +
-            #             s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) +
-            #             s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 +
-            #             s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3)
-        # if idx_fullspl == len(s_coeff):
-        #     full_sum = (s_coeff[idx_fullspl-1,0] +
-        #                 s_coeff[idx_fullspl-1,1]/2*(xvec[0]-xvec[0])**2 +
-        #                 s_coeff[idx_fullspl-1,2]/3*(xvec[0]-xvec[0])**3 +
-        #                 s_coeff[idx_fullspl-1,2]/4*(xvec[0]-xvec[0])**4)
+                    s_coeff[idx_fullspl,1]*(xloc-xvec[idx_fullspl]) +
+                    s_coeff[idx_fullspl,2]*(xloc-xvec[idx_fullspl])**2 +
+                    s_coeff[idx_fullspl,3]*(xloc-xvec[idx_fullspl])**3)
             
     #this one is to get the value of the integral
     for k in range(idx_fullspl+1):      
