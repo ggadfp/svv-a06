@@ -21,10 +21,10 @@ bendstr2 = np.genfromtxt("B737.rpt", dtype=str, skip_header=5816, skip_footer=(5
 bendstr2 = bendstr2.astype(np.float)
 
 # jammed bending stresses
-jambenstr1 = np.genfromtxt("B737.rpt", dtype=str, skip_header=6705, skip_footer=(59956 - 12483 - 147), delimiter="")
-jambenstr1 = jambenstr1.astype(np.float)
-jambenstr2 = np.genfromtxt("B737.rpt", dtype=str, skip_header=12501, skip_footer=(59956 - 13357 - 140), delimiter="")
-jambenstr2 = jambenstr2.astype(np.float)
+jambendstr1 = np.genfromtxt("B737.rpt", dtype=str, skip_header=6705, skip_footer=(59956 - 12483 - 147), delimiter="")
+jambendstr1 = jambendstr1.astype(np.float)
+jambendstr2 = np.genfromtxt("B737.rpt", dtype=str, skip_header=12501, skip_footer=(59956 - 13357 - 140), delimiter="")
+jambendstr2 = jambendstr2.astype(np.float)
 
 # jammed stresses
 jamstr1 = np.genfromtxt("B737.rpt", dtype=str, skip_header=13390, skip_footer=(59956 - 19168 - 128), delimiter="")
@@ -48,7 +48,7 @@ jamu = jamu.astype(np.float)
 xyzn = np.genfromtxt("B737.inp", dtype=str, skip_header=9, skip_footer=(14594 - 6598), delimiter=",")
 xyzn = xyzn.astype(np.float)
 
-print(xyzn)
+#print(xyzn)
 
 
 f = open("B737.inp", "r")
@@ -75,13 +75,51 @@ f.close()
 n_in_e = e[:,[1,2,3,4]]
 #print(n_in_e)
 
+# von mises loc1
+m1avvallis_b = []
+m1avvallis_jb = []
+m1avvallis_j = []
 
-avvallis = []
+# von mises loc2
+m2avvallis_b = []
+m2avvallis_jb = []
+m2avvallis_j = []
+
+# S12 loc1
+s1avvallis_b = []
+s1avvallis_jb = []
+s1avvallis_j = []
+
+# S12 loc2
+s2avvallis_b = []
+s2avvallis_jb = []
+s2avvallis_j = []
 
 
 for i in range(len(n_in_e)):
     #print(i)
-    val = []
+    
+    # Von Mises loc1
+    m1val_b = []
+    m1val_jb = []
+    m1val_j = []
+
+    # Von Mises loc2
+    m2val_b = []
+    m2val_jb = []
+    m2val_j = []
+
+    # S12 loc1
+    s1val_b = []
+    s1val_jb = []
+    s1val_j = []
+
+    # S12 loc2
+    s2val_b = []
+    s2val_jb = []
+    s2val_j = []
+
+
     e_of_n = np.argwhere(n_in_e==i)[:,0] #corresponding elements where a node appears in
     
 
@@ -92,61 +130,342 @@ for i in range(len(n_in_e)):
         #print(ind, j)
         if 1732 <= ind2 <= 2139:
             ind2 = ind2 - 1732
-            value = bendstr2[:,2][ind2]
+            
+            # Von Mises loc1
+            m1value_b = bendstr2[:,2][ind2]
+            m1value_jb = jambendstr2[:,2][ind2]
+            m1value_j = jamstr2[:,2][ind2]
+
+            # Von Mises loc2
+            m2value_b = bendstr2[:,3][ind2]
+            m2value_jb = jambendstr2[:,3][ind2]
+            m2value_j = jamstr2[:,3][ind2]
+
+            # S12 loc1
+            s1value_b = bendstr2[:,4][ind2]
+            s1value_jb = jambendstr2[:,4][ind2]
+            s1value_j = jamstr2[:,4][ind2]
+
+            # S12 loc2
+            s2value_b = bendstr2[:,5][ind2]
+            s2value_jb = jambendstr2[:,5][ind2]
+            s2value_j = jamstr2[:,5][ind2]
+
+
             ind1 = 0        
         elif 3835 <= ind2 <= 3946:
             ind2 = ind2 - 1732 - 1695
-            value = bendstr2[:,2][ind2]
+            
+            # Von Mises loc1
+            value_b = bendstr2[:,2][ind2]
+            value_jb = jambendstr2[:,2][ind2]
+            value_j = jamstr2[:,2][ind2]
+
+            # Von Mises loc2
+            m2value_b = bendstr2[:,3][ind2]
+            m2value_jb = jambendstr2[:,3][ind2]
+            m2value_j = jamstr2[:,3][ind2]
+
+            # S12 loc1
+            s1value_b = bendstr2[:,4][ind2]
+            s1value_jb = jambendstr2[:,4][ind2]
+            s1value_j = jamstr2[:,4][ind2]
+
+            # S12 loc2
+            s2value_b = bendstr2[:,5][ind2]
+            s2value_jb = jambendstr2[:,5][ind2]
+            s2value_j = jamstr2[:,5][ind2]
+
             ind1 = 0
         elif 5375 <= ind2 <= 5430:
             ind2 = ind2 - 1732 - 1695 - 1428
-            value = bendstr2[:,2][ind2]
+            
+            # Von Mises loc1
+            value_b = bendstr2[:,2][ind2]
+            value_jb = jambendstr2[:,2][ind2]
+            value_j = jamstr2[:,2][ind2]
+
+            # Von Mises loc2
+            m2value_b = bendstr2[:,3][ind2]
+            m2value_jb = jambendstr2[:,3][ind2]
+            m2value_j = jamstr2[:,3][ind2]
+
+            # S12 loc1
+            s1value_b = bendstr2[:,4][ind2]
+            s1value_jb = jambendstr2[:,4][ind2]
+            s1value_j = jamstr2[:,4][ind2]
+
+            # S12 loc2
+            s2value_b = bendstr2[:,5][ind2]
+            s2value_jb = jambendstr2[:,5][ind2]
+            s2value_j = jamstr2[:,5][ind2]
+
             ind1 = 0
         elif 6229 <= ind2 <= 6508:
-           ind2 = ind2 - 1732 - 1695 - 1428 - 798
-           value = bendstr2[:,2][ind2]
-           ind1 = 0
+            ind2 = ind2 - 1732 - 1695 - 1428 - 798
+            # Von Mises loc1
+            value_b = bendstr2[:,2][ind2]
+            value_jb = jambendstr2[:,2][ind2]
+            value_j = jamstr2[:,2][ind2]
+
+            # Von Mises loc2
+            m2value_b = bendstr2[:,3][ind2]
+            m2value_jb = jambendstr2[:,3][ind2]
+            m2value_j = jamstr2[:,3][ind2]
+
+            # S12 loc1
+            s1value_b = bendstr2[:,4][ind2]
+            s1value_jb = jambendstr2[:,4][ind2]
+            s1value_j = jamstr2[:,4][ind2]
+
+            # S12 loc2
+            s2value_b = bendstr2[:,5][ind2]
+            s2value_jb = jambendstr2[:,5][ind2]
+            s2value_j = jamstr2[:,5][ind2]
+
+            ind1 = 0
         else:
             ind2 = 0
         
         if 0 <= ind1 <= 1731:
             ind1 = ind1 
+            
+            # Von Mises loc1
+            m1value_b = bendstr1[:,2][ind1]
+            m1value_jb = jambendstr1[:,2][ind1]
+            m1value_j = jamstr1[:,2][ind1]
+
+            # Von Mises loc2
+            m2value_b = bendstr1[:,3][ind1]
+            m2value_jb = jambendstr1[:,3][ind1]
+            m2value_j = jamstr1[:,3][ind1]
+
+            # S12 loc1
+            s1value_b = bendstr1[:,4][ind1]
+            s1value_jb = jambendstr1[:,4][ind1]
+            s1value_j = jamstr1[:,4][ind1]
+
+            # S12 loc2
+            s2value_b = bendstr1[:,5][ind1]
+            s2value_jb = jambendstr1[:,5][ind1]
+            s2value_j = jamstr1[:,5][ind1]
+
             #print(ind1, j)
         elif 2140 <= ind1 <= 3834:
             ind1 = ind1 - 408 #112
+            
+            # Von Mises loc1
+            m1value_b = bendstr1[:,2][ind1]
+            m1value_jb = jambendstr1[:,2][ind1]
+            m1value_j = jamstr1[:,2][ind1]
+
+            # Von Mises loc2
+            m2value_b = bendstr1[:,3][ind1]
+            m2value_jb = jambendstr1[:,3][ind1]
+            m2value_j = jamstr1[:,3][ind1]
+
+            # S12 loc1
+            s1value_b = bendstr1[:,4][ind1]
+            s1value_jb = jambendstr1[:,4][ind1]
+            s1value_j = jamstr1[:,4][ind1]
+
+            # S12 loc2
+            s2value_b = bendstr1[:,5][ind1]
+            s2value_jb = jambendstr1[:,5][ind1]
+            s2value_j = jamstr1[:,5][ind1]
+
             #print(ind1, j)
         elif 3947 <= ind1 <= 5374:
             ind1 = ind1 - 408 - 112 
+            
+            # Von Mises loc1
+            m1value_b = bendstr1[:,2][ind1]
+            m1value_jb = jambendstr1[:,2][ind1]
+            m1value_j = jamstr1[:,2][ind1]
+
+            # Von Mises loc2
+            m2value_b = bendstr1[:,3][ind1]
+            m2value_jb = jambendstr1[:,3][ind1]
+            m2value_j = jamstr1[:,3][ind1]
+
+            # S12 loc1
+            s1value_b = bendstr1[:,4][ind1]
+            s1value_jb = jambendstr1[:,4][ind1]
+            s1value_j = jamstr1[:,4][ind1]
+
+            # S12 loc2
+            s2value_b = bendstr1[:,5][ind1]
+            s2value_jb = jambendstr1[:,5][ind1]
+            s2value_j = jamstr1[:,5][ind1]
+
             #print(ind1, j)
         elif 5431 <= ind1 <= 6228:
             ind1 = ind1 - 408 - 112 - 56 
+            
+            # Von Mises loc1
+            m1value_b = bendstr1[:,2][ind1]
+            m1value_jb = jambendstr1[:,2][ind1]
+            m1value_j = jamstr1[:,2][ind1]
+
+            # Von Mises loc2
+            m2value_b = bendstr1[:,3][ind1]
+            m2value_jb = jambendstr1[:,3][ind1]
+            m2value_j = jamstr1[:,3][ind1]
+
+            # S12 loc1
+            s1value_b = bendstr1[:,4][ind1]
+            s1value_jb = jambendstr1[:,4][ind1]
+            s1value_j = jamstr1[:,4][ind1]
+
+            # S12 loc2
+            s2value_b = bendstr1[:,5][ind1]
+            s2value_jb = jambendstr1[:,5][ind1]
+            s2value_j = jamstr1[:,5][ind1]
+
             #print(ind1, j)
         elif 6509 <= ind1 <= 6634:
             ind1 = ind1 - 408 - 112 - 56 - 280 
+            
+            # Von Mises loc1
+            m1value_b = bendstr1[:,2][ind1]
+            m1value_jb = jambendstr1[:,2][ind1]
+            m1value_j = jamstr1[:,2][ind1]
+
+            # Von Mises loc2
+            m2value_b = bendstr1[:,3][ind1]
+            m2value_jb = jambendstr1[:,3][ind1]
+            m2value_j = jamstr1[:,3][ind1]
+
+            # S12 loc1
+            s1value_b = bendstr1[:,4][ind1]
+            s1value_jb = jambendstr1[:,4][ind1]
+            s1value_j = jamstr1[:,4][ind1]
+
+            # S12 loc2
+            s2value_b = bendstr1[:,5][ind1]
+            s2value_jb = jambendstr1[:,5][ind1]
+            s2value_j = jamstr1[:,5][ind1]
+
             #print(ind1, j)
+        else:
+            ind1 = 0
         
         
-        value = bendstr1[:,2][ind1]
         
-        val.append(value)
+        # Von Mises loc1
+        m1val_b.append(m1value_b)
+        m1val_jb.append(m1value_jb)
+        m1val_j.append(m1value_j)
+
+        # Von Mises loc2
+        m2val_b.append(m2value_b)
+        m2val_jb.append(m2value_jb)
+        m2val_j.append(m2value_j)
+
+        # S12 loc1
+        s1val_b.append(s1value_b)
+        s1val_jb.append(s1value_jb)
+        s1val_j.append(s1value_j)
+
+        # S12 loc2
+        s2val_b.append(s2value_b)
+        s2val_jb.append(s2value_jb)
+        s2val_j.append(s2value_j)
         
         
     
-    #print("donzo")
-    avval = np.mean(val)
-    avvallis.append(avval)
-    #print(val)
-    #print(avval)
-    #print(avvallis)
+    
+    
+    # Von Mises loc1
+    m1avval_b = np.mean(m1val_b)
+    m1avvallis_b.append(m1avval_b)
+    m1avval_jb = np.mean(m1val_jb)
+    m1avvallis_jb.append(m1avval_jb)
+    m1avval_j = np.mean(m1val_j)
+    m1avvallis_j.append(m1avval_j)
 
+    # Von Mises loc2
+    m2avval_b = np.mean(m2val_b)
+    m2avvallis_b.append(m2avval_b)
+    m2avval_jb = np.mean(m2val_jb)
+    m2avvallis_jb.append(m2avval_jb)
+    m2avval_j = np.mean(m2val_j)
+    m2avvallis_j.append(m2avval_j)
 
+    # S12 loc1
+    s1avval_b = np.mean(s1val_b)
+    s1avvallis_b.append(s1avval_b)
+    s1avval_jb = np.mean(s1val_jb)
+    s1avvallis_jb.append(s1avval_jb)
+    s1avval_j = np.mean(s1val_j)
+    s1avvallis_j.append(s1avval_j)
 
-avvallis = np.delete(avvallis, 0)
-avvallis = np.resize(avvallis, (len(avvallis) - 45))
+    # S12 loc2
+    s2avval_b = np.mean(s2val_b)
+    s2avvallis_b.append(s2avval_b)
+    s2avval_jb = np.mean(s2val_jb)
+    s2avvallis_jb.append(s2avval_jb)
+    s2avval_j = np.mean(s2val_j)
+    s2avvallis_j.append(s2avval_j)
+
     
 
-#print(avvallis)
-#print(len(avvallis))
+
+# Von Mises loc1
+m1avvallis_b = np.delete(m1avvallis_b, 0)
+m1avvallis_b = np.resize(m1avvallis_b, (len(m1avvallis_b) - 45))
+m1avvallis_jb = np.delete(m1avvallis_jb, 0)
+m1avvallis_jb = np.resize(m1avvallis_jb, (len(m1avvallis_jb) - 45))
+m1avvallis_j = np.delete(m1avvallis_j, 0)
+m1avvallis_j = np.resize(m1avvallis_j, (len(m1avvallis_j) - 45))
+
+# Von Mises loc2
+m2avvallis_b = np.delete(m2avvallis_b, 0)
+m2avvallis_b = np.resize(m2avvallis_b, (len(m2avvallis_b) - 45))
+m2avvallis_jb = np.delete(m2avvallis_jb, 0)
+m2avvallis_jb = np.resize(m2avvallis_jb, (len(m2avvallis_jb) - 45))
+m2avvallis_j = np.delete(m2avvallis_j, 0)
+m2avvallis_j = np.resize(m2avvallis_j, (len(m2avvallis_j) - 45))
+
+# S12 loc1
+s1avvallis_b = np.delete(s1avvallis_b, 0)
+s1avvallis_b = np.resize(s1avvallis_b, (len(s1avvallis_b) - 45))
+s1avvallis_jb = np.delete(s1avvallis_jb, 0)
+s1avvallis_jb = np.resize(s1avvallis_jb, (len(s1avvallis_jb) - 45))
+s1avvallis_j = np.delete(s1avvallis_j, 0)
+s1avvallis_j = np.resize(s1avvallis_j, (len(s1avvallis_j) - 45))
+
+# S12 loc2
+s2avvallis_b = np.delete(s2avvallis_b, 0)
+s2avvallis_b = np.resize(s2avvallis_b, (len(s2avvallis_b) - 45))
+s2avvallis_jb = np.delete(s2avvallis_jb, 0)
+s2avvallis_jb = np.resize(s2avvallis_jb, (len(s2avvallis_jb) - 45))
+s2avvallis_j = np.delete(s2avvallis_j, 0)
+s2avvallis_j = np.resize(s2avvallis_j, (len(s2avvallis_j) - 45))
+
+
+# Von Mises loc1
+m1xyzn_b = np.c_[xyzn,m1avvallis_b]
+m1xyzn_jb = np.c_[xyzn,m1avvallis_jb]
+m1xyzn_j = np.c_[xyzn,m1avvallis_j]
+
+# Von Mises loc2
+m2xyzn_b = np.c_[xyzn,m2avvallis_b]
+m2xyzn_jb = np.c_[xyzn,m2avvallis_jb]
+m2xyzn_j = np.c_[xyzn,m2avvallis_j]
+
+# S12 loc1
+s1xyzn_b = np.c_[xyzn,s1avvallis_b]
+s1xyzn_jb = np.c_[xyzn,s1avvallis_jb]
+s1xyzn_j = np.c_[xyzn,s1avvallis_j]
+
+# S12 loc2
+s2xyzn_b = np.c_[xyzn,s2avvallis_b]
+s2xyzn_jb = np.c_[xyzn,s2avvallis_jb]
+s2xyzn_j = np.c_[xyzn,s2avvallis_j]
+
+#print(np.mean(avvallis_b))
+#print(len(avvallis_b))
 
 
 ### displacements
