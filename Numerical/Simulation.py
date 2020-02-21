@@ -202,11 +202,14 @@ def cubicspline(Nsw,xvec,data):
 s_coeff_torque =  cubicspline(Nx,x[0,:],torque)
 s_coeff_load = cubicspline(Nx,x[0,:],load)
 
-# #checking if the splines have points that connect
-# r_splinecheck = [0]*(Nx-1)
-# for i in range(Nx-2):
-#     si = s_coeff_torque[i,0] + s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) + s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 + s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3
-#     r[i] = abs(si-s_coeff_torque[i+1,0])
+#checking if the splines have points that connect
+r_splinecheck = [0]*(Nx-1)
+for i in range(Nx-2):
+    si = (s_coeff_torque[i,0] +
+          s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) +
+          s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 +
+          s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3)
+    r_splinecheck[i] = abs(si-s_coeff_torque[i+1,0])
     
     
     
