@@ -215,6 +215,12 @@ def linearspline(Nsw,xvec,data):
         s_coeff[k,2] = 0 #quadratic term (is multiplied by (x-xk)^2)
         s_coeff[k,3] = 0 #cubic term (is multiplied by (x-xk)^3)
         
+    last_value = (s_coeff[-1,0] +
+                  s_coeff[-1,1]*(xvec[-1]-xvec[-2]) +
+                  s_coeff[-1,2]*(xvec[-1]-xvec[-2])**2 +
+                  s_coeff[-1,3]*(xvec[-1]-xvec[-2])**3)
+    s_coeff = np.vstack(([s_coeff[0,0],0,0,0],s_coeff,[last_value,0,0,0]))
+    
     return s_coeff
     
 #%%
@@ -241,81 +247,82 @@ for i in range(Nx-2):
     r_3[i] = abs(si-2*s_coeff_torque[i+1,2])
    
 #%%
-testing = linearspline(Nx,x[0,:],x[0])
-
-def int_spline(s_coeff,degree,xloc,xvec):
-    
-    #adding the beginning and end points
-    last_value = (s_coeff[-1,0] +
-                  s_coeff[-1,1]*(xvec[-1]-xvec[-2]) +
-                  s_coeff[-1,2]*(xvec[-1]-xvec[-2])**2 +
-                  s_coeff[-1,3]*(xvec[-1]-xvec[-2])**3)
-    xvec = np.vstack(([0],xvec.reshape((len(xvec),1)),[la]))
-    s_coeff = np.vstack(([s_coeff[0,0],0,0,0],s_coeff,[last_value,0,0,0]))
+#adding the beginning and end points
+xfull = np.vstack(([0],x[0].reshape((len(x[0]),1)),[la]))
+   
+#%%   
+def function_value(s_coeff,xloc,xvec):
     
     #finding the index of the last node before the xloc
     diff = np.array(xvec - xloc)
     if xloc == 0:
-        idx_fullspl = 0
+        idx = 0
     elif xloc == la:
-        idx_fullspl = len(s_coeff)-1
+        idx = len(xvec)-2
     else:
-        idx_fullspl = int(np.where(diff < 0)[0][-1])    
-  
-    full_sum = 0
-    
+        idx = int(np.where(diff < 0)[0][-1])
     #this one is the value of the function at that point
-    if degree == 0:
-        full_sum = (s_coeff[idx_fullspl,0] +
-                    s_coeff[idx_fullspl,1]*(xloc-xvec[idx_fullspl]) +
-                    s_coeff[idx_fullspl,2]*(xloc-xvec[idx_fullspl])**2 +
-                    s_coeff[idx_fullspl,3]*(xloc-xvec[idx_fullspl])**3)
-            
-    #this one is to get the value of the different integrals
-    for k in range(idx_fullspl+1):     
-        if k < idx_fullspl:                
-            if degree == 1:
-                full_sum += (s_coeff[k,0]*(xvec[k+1]-xvec[k]) +
-                             s_coeff[k,1]/2*(xvec[k+1]-xvec[k])**2 +
-                             s_coeff[k,2]/3*(xvec[k+1]-xvec[k])**3 +
-                             s_coeff[k,3]/4*(xvec[k+1]-xvec[k])**4)
-            elif degree == 2:
-                full_sum += (s_coeff[k,0]/2*(xvec[k+1]-xvec[k])**2 +
-                             s_coeff[k,1]/6*(xvec[k+1]-xvec[k])**3 +
-                             s_coeff[k,2]/12*(xvec[k+1]-xvec[k])**4 +
-                             s_coeff[k,3]/20*(xvec[k+1]-xvec[k])**5)
-            elif degree == 4:
-                full_sum += (s_coeff[k,0]/24*(xvec[k+1]-xvec[k])**4 +
-                             s_coeff[k,1]/120*(xvec[k+1]-xvec[k])**5 +
-                             s_coeff[k,2]/360*(xvec[k+1]-xvec[k])**6 +
-                             s_coeff[k,3]/840*(xvec[k+1]-xvec[k])**7)
-        elif k == idx_fullspl:
-            if degree == 1:
-                full_sum += (s_coeff[k,0]*(xloc-xvec[k]) +
-                             s_coeff[k,1]/2*(xloc-xvec[k])**2 +
-                             s_coeff[k,2]/3*(xloc-xvec[k])**3 +
-                             s_coeff[k,3]/4*(xloc-xvec[k])**4)
-            elif degree == 2:
-                full_sum += (s_coeff[k,0]/2*(xloc-xvec[k])**2 +
-                             s_coeff[k,1]/6*(xloc-xvec[k])**3 +
-                             s_coeff[k,2]/12*(xloc-xvec[k])**4 +
-                             s_coeff[k,3]/20*(xloc-xvec[k])**5)
-            elif degree == 4:
-                full_sum += (s_coeff[k,0]/24*(xloc-xvec[k])**4 +
-                             s_coeff[k,1]/120*(xloc-xvec[k])**5 +
-                             s_coeff[k,2]/360*(xloc-xvec[k])**6 +
-                             s_coeff[k,3]/840*(xloc-xvec[k])**7)
-    return float(full_sum)
+    value = (s_coeff[idx,0] +
+            s_coeff[idx,1]*(xloc-xvec[idx]) +
+            s_coeff[idx,2]*(xloc-xvec[idx])**2 +
+            s_coeff[idx,3]*(xloc-xvec[idx])**3)
+    
+    return value
 
-test=int_spline(testing,0,la,x[0])
-#making a plot for the test case
-test_dist = []
-for i in range(2001):
-    test_dist.append(int_spline(testing,2,i*la/2000,x[0]))
-plt.plot(np.linspace(0,la,num=2001),test_dist)
-#plt.plot(x[0],torque)
-# plt.scatter(np.linspace(0,la,num=2001),torque_dist)
+#%%
+def integ_spline(s_coeff,xloc,xvec):
+       
+    #finding the index of the last node before the xloc
+    diff = np.array(xvec - xloc)
+    if xloc == 0:
+        idx = 0
+    elif xloc == la:
+        idx = len(s_coeff)-2
+    else:
+        idx = int(np.where(diff < 0)[0][-1])    
+  
+    full_sum = 0            
+    #this one is to get the value of the different integrals
+    for k in range(idx+1):     
+        if k < idx:                
+            full_sum += (s_coeff[k,0]*(xvec[k+1]-xvec[k]) +
+                         (s_coeff[k,1]*(xvec[k+1]-xvec[k])**2)/2 +
+                         s_coeff[k,2]/3*(xvec[k+1]-xvec[k])**3 +
+                         s_coeff[k,3]/4*(xvec[k+1]-xvec[k])**4)
+        elif k == idx:
+            full_sum += (s_coeff[k,0]*(xloc-xvec[k]) +
+                         s_coeff[k,1]/2*(xloc-xvec[k])**2 +
+                         s_coeff[k,2]/3*(xloc-xvec[k])**3 +
+                         s_coeff[k,3]/4*(xloc-xvec[k])**4)
+    return float(full_sum)
+#%%
+def doubleinteg_spline(s_coeff,xvec):
+    first_integral = [integ_spline(s_coeff,i,xvec) for i in np.linspace(0,la,201)]
+    coeff_f_integral = linearspline(len(np.linspace(0,la,201)),np.linspace(0,la,201),first_integral)
+    second_integral = [integ_spline(coeff_f_integral,i,np.linspace(0,la,201)) for i in np.linspace(0,la,201)]
+    return second_integral
+#%%
+def tripleinteg_spline(s_coeff,xvec):
+    return
+#%%
+test_data = x[0]
+coeff_testing = linearspline(Nx,x[0],test_data)
+test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,201)]
+integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,201)]
+integral_test_1 = doubleinteg_spline(coeff_testing, xfull)
+coeff_testing_2 = linearspline(len(np.linspace(0,la,201)),np.linspace(0,la,201),integral_test_1)
+integral_test_2 = doubleinteg_spline(coeff_testing, xfull)
+
+plt.plot(test_data,test_data)
+plt.scatter(np.linspace(0,la,len(test_returned_values)),test_returned_values)
+plt.plot(test_data,np.array(test_data)**2/2)
+plt.scatter(np.linspace(0,la,len(integral_test)),integral_test)
+plt.plot(test_data,np.array(test_data)**3/6)
+plt.scatter(np.linspace(0,la,len(integral_test_1)),integral_test_1)
+plt.plot(test_data,np.array(test_data)**4/24)
+plt.scatter(np.linspace(0,la,len(integral_test_2)),integral_test_2)
 plt.show()
+
 #%%
 ##making a torque distribution plot to check if it makes sense
 #torque_dist = []
