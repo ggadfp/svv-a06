@@ -122,6 +122,7 @@ def base_shear(I_zz):
     # Function for the semi-circular part integrating the base shear flow from 0 to pi/2
     def circle():
         q_c = []
+        
         I_c = -tsk*h*h/(2*2*I_zz)
         qval = 0
         count = 0
@@ -138,7 +139,7 @@ def base_shear(I_zz):
     def circle_rev():
         q_c = []
         I_c = -tsk*h*h/(2*2*I_zz) 
-        qval = inclined_2()[-1] - spar()[-1]
+        qval = inclined_2()[-1] - spar_rev()[-1]
         count = 0
         for i in range(0,len(nodes_circle_rev)-2,2):
             qval += I_c*(nodes_circle_rev[i+2] - nodes_circle_rev[i])/6 * (-np.sin(nodes_circle_rev[i+2]) - 4*np.sin(nodes_circle_rev[i+1]) - np.sin(nodes_circle_rev[i]))
@@ -156,16 +157,16 @@ def base_shear(I_zz):
         count = 0
         for i in range(0,len(nodes_skin)-2,2):
             qval += I_c*((nodes_skin[i+2] - nodes_skin[i])/6 * ( (-1 + nodes_skin[i+2]/lsk) + 4*(-1+nodes_skin[i+1]/lsk) + (-1 + nodes_skin[i]/lsk)))
-            if nodes_skin[i] >= np.abs(Z_locations[2]*np.cos(beta_rad)) and count == 0:
+            if nodes_skin[i] >= np.abs(Z_locations[2]/np.cos(beta_rad)) and count == 0:
                 qval += -Boom_area[2]*Y_locations[2]/I_zz
                 count += 1
-            elif nodes_skin[i] >= np.abs(Z_locations[3]*np.cos(beta_rad)) and count == 1:
+            elif nodes_skin[i] >= np.abs(Z_locations[3]/np.cos(beta_rad)) and count == 1:
                 qval += -Boom_area[3]*Y_locations[3]/I_zz
                 count += 1
-            elif nodes_skin[i] >= np.abs(Z_locations[4]*np.cos(beta_rad)) and count == 2:
+            elif nodes_skin[i] >= np.abs(Z_locations[4]/np.cos(beta_rad)) and count == 2:
                 qval += -Boom_area[4]*Y_locations[4]/I_zz
                 count += 1
-            elif nodes_skin[i] >= np.abs(Z_locations[5]*np.cos(beta_rad)) and count == 3:
+            elif nodes_skin[i] >= np.abs(Z_locations[5]/np.cos(beta_rad)) and count == 3:
                 qval += -Boom_area[5]*Y_locations[5]/I_zz
                 count += 1
             elif nodes_skin[i] >= np.abs(Z_locations[6]*np.cos(beta_rad)) and count == 4:
@@ -182,19 +183,19 @@ def base_shear(I_zz):
         count = 0
         for i in range(0,len(nodes_skin)-2,2):
             qval += I_c*(nodes_skin[i+2] - nodes_skin[i])/6 * (nodes_skin[i+2] + 4*nodes_skin[i+1] + nodes_skin[i])
-            if nodes_skin[i] >= lsk - np.abs(Z_locations[7]*np.cos(beta_rad)) and count == 0:
+            if nodes_skin[i] >= lsk - np.abs(Z_locations[7]/np.cos(beta_rad)) and count == 0:
                 qval += -Boom_area[7]*Y_locations[7]/I_zz
                 count+=1
-            elif nodes_skin[i] >= lsk - np.abs(Z_locations[8]*np.cos(beta_rad)) and count == 1:
+            elif nodes_skin[i] >= lsk - np.abs(Z_locations[8]/np.cos(beta_rad)) and count == 1:
                 qval += -Boom_area[8]*Y_locations[8]/I_zz
                 count += 1
-            elif nodes_skin[i] >= lsk - np.abs(Z_locations[9]*np.cos(beta_rad)) and count == 2:
+            elif nodes_skin[i] >= lsk - np.abs(Z_locations[9]/np.cos(beta_rad)) and count == 2:
                 qval += -Boom_area[9]*Y_locations[9]/I_zz
                 count += 1
-            elif nodes_skin[i] >= lsk - np.abs(Z_locations[10]*np.cos(beta_rad)) and count == 3:
+            elif nodes_skin[i] >= lsk - np.abs(Z_locations[10]/np.cos(beta_rad)) and count == 3:
                 qval += -Boom_area[10]*Y_locations[10]/I_zz
                 count += 1
-            elif nodes_skin[i] >= lsk - np.abs(Z_locations[11]*np.cos(beta_rad)) and count == 4:
+            elif nodes_skin[i] >= lsk - np.abs(Z_locations[11]/np.cos(beta_rad)) and count == 4:
                 qval += -Boom_area[11]*Y_locations[11]/I_zz
                 count += 1
             (q_c).append(qval)
@@ -206,7 +207,7 @@ def base_shear(I_zz):
         I_c = tsp/I_zz
         qval = 0
         for i in range(0,len(nodes_spar)-2,2):
-            qval += I_c*(nodes_spar[i+2] - nodes_spar[i])/6 * (nodes_spar[i+2] + 4*nodes_skin[i+1] + nodes_skin[i])
+            qval += I_c*(nodes_spar[i+2] - nodes_spar[i])/6 * (nodes_spar[i+2] + 4*nodes_spar[i+1] + nodes_spar[i])
             (q_c).append(qval)
         return np.array(q_c)
     
@@ -216,7 +217,7 @@ def base_shear(I_zz):
         I_c = tsp/I_zz
         qval = 0
         for i in range(0,len(nodes_spar_rev)-2,2):
-            qval += I_c*(nodes_spar[i+2] - nodes_spar[i])/6 * (nodes_spar[i+2] + 4*nodes_skin[i+1] + nodes_skin[i])
+            qval += I_c*(nodes_spar_rev[i+2] - nodes_spar_rev[i])/6 * (nodes_spar_rev[i+2] + 4*nodes_spar_rev[i+1] + nodes_spar_rev[i])
             (q_c).append(qval)
         return np.array(q_c)
     
@@ -238,7 +239,7 @@ def redundant_shear(I_zz):
         half_circle = nodes_circle[0:-1:2]
         q_int = 0
         for i in range(0,len(half_circle)-2,2):
-            q_int += (half_circle[i+2] - half_circle[i])/6 * (qb_circle[i+2] + 4*qb_circle[i+1] + qb_circle[i])
+            q_int = (half_circle[i+2] - half_circle[i])/6 * (qb_circle[i+2] + 4*qb_circle[i+1] + qb_circle[i])
             (q_red).append(q_int)
         return np.array(q_red)*I_c
     
@@ -248,17 +249,17 @@ def redundant_shear(I_zz):
         half_circle_rev = nodes_circle_rev[0:-1:2]
         q_int = 0
         for i in range(0,len(half_circle_rev)-2,2):
-            q_int += (half_circle_rev[i+2] - half_circle_rev[i])/6 * (qb_circle_rev[i+2] + 4*qb_circle_rev[i+1] + qb_circle_rev[i])
+            q_int = (half_circle_rev[i+2] - half_circle_rev[i])/6 * (qb_circle_rev[i+2] + 4*qb_circle_rev[i+1] + qb_circle_rev[i])
             (q_red).append(q_int)
         return np.array(q_red)*I_c
     
     def spar_red():
         q_red = []
-        I_c = -1/(G*tsp)
+        I_c = 1/(G*tsp)
         half_spar = nodes_spar[0:-1:2]
         q_int = 0
         for i in range(0,len(half_spar)-2,2):
-            q_int += (half_spar[i+2] - half_spar[i])/6 * (qb_spar[i+2] + 4*qb_spar[i+1] + qb_spar[i])
+            q_int = (half_spar[i+2] - half_spar[i])/6 * (qb_spar[i+2] + 4*qb_spar[i+1] + qb_spar[i])
             (q_red).append(q_int)
         return np.array(q_red)*I_c
     
@@ -268,7 +269,7 @@ def redundant_shear(I_zz):
         half_spar_rev = nodes_spar_rev[0:-1:2]
         q_int = 0
         for i in range(0,len(half_spar_rev)-2,2):
-            q_int += (half_spar_rev[i+2] - half_spar_rev[i])/6 * (qb_spar_rev[i+2] + 4*qb_spar_rev[i+1] + qb_spar_rev[i])
+            q_int = (half_spar_rev[i+2] - half_spar_rev[i])/6 * (qb_spar_rev[i+2] + 4*qb_spar_rev[i+1] + qb_spar_rev[i])
             (q_red).append(q_int)
         return np.array(q_red)*I_c
     
@@ -280,58 +281,58 @@ def redundant_shear(I_zz):
         q_int_1 = 0
         q_int_2 = 0
         for i in range(0,len(half_incl)-2,2):
-            q_int_1 += (half_incl[i+2]-half_incl[i])/6 *(qb_incl_1[i+2] + 4*qb_incl_1[i+1] + qb_incl_1[i])
-            q_int_2 += (half_incl[i+2]-half_incl[i])/6 *(qb_incl_2[i+2] + 4*qb_incl_2[i+1] + qb_incl_2[i])
+            q_int_1 = (half_incl[i+2]-half_incl[i])/6 *(qb_incl_1[i+2] + 4*qb_incl_1[i+1] + qb_incl_1[i])
+            q_int_2 = (half_incl[i+2]-half_incl[i])/6 *(qb_incl_2[i+2] + 4*qb_incl_2[i+1] + qb_incl_2[i])
             (q_red_1).append(q_int_1)
             (q_red_2).append(q_int_2)
         return np.array(q_red_1)*I_c, np.array(q_red_2)*I_c
     
-    def denom_cell_1():
-        
-        half_circle = nodes_circle[0:-1:2]
-        half_circle_rev = nodes_circle_rev[0:-1:2]
-        half_spar = nodes_spar[0:-1:2]
-        half_spar_rev = nodes_spar_rev[0:-1:2]
-        s_red = []
-        s_int = 0
-        
-        for i in range(0,len(half_circle)-2,2):
-            s_int += h/(2*G*tsk)*(half_circle[i+2] - half_circle[i])
-            (s_red).append(s_int)
-        for i in range(0,len(half_circle_rev)-2,2):
-            s_int += h/(2*G*tsk)*(half_circle_rev[i+2] - half_circle_rev[i])
-            (s_red).append(s_int)
-        for i in range(0,len(half_spar)-2,2):
-            s_int += -1/(G*tsp)*(half_spar[i+2]-half_spar[i])
-            (s_red).append(s_int)
-        for i in range(0,len(half_spar_rev)-2,2):
-            s_int += 1/(G*tsp)*(half_spar_rev[i+2] - half_spar_rev[i])
-            (s_red).append(s_int)
-            
-        return np.array(s_red)
+#    def denom_cell_1():
+#        
+#        half_circle = nodes_circle[0:-1:2]
+#        half_circle_rev = nodes_circle_rev[0:-1:2]
+#        half_spar = nodes_spar[0:-1:2]
+#        half_spar_rev = nodes_spar_rev[0:-1:2]
+#        s_red = []
+#        s_int = 0
+#        
+#        for i in range(0,len(half_circle)-2,2):
+#            s_int += h/(2*G*tsk)*(half_circle[i+2] - half_circle[i])
+#            (s_red).append(s_int)
+#        for i in range(0,len(half_circle_rev)-2,2):
+#            s_int += h/(2*G*tsk)*(half_circle_rev[i+2] - half_circle_rev[i])
+#            (s_red).append(s_int)
+#        for i in range(0,len(half_spar)-2,2):
+#            s_int += 1/(G*tsp)*(half_spar[i+2]-half_spar[i])
+#            (s_red).append(s_int)
+#        for i in range(0,len(half_spar_rev)-2,2):
+#            s_int += 1/(G*tsp)*(half_spar_rev[i+2] - half_spar_rev[i])
+#            (s_red).append(s_int)
+#            
+#        return np.array(s_red)
+#    
+#    def denom_cell_2():
+#        
+#        half_incl = nodes_skin[0:-1:2]
+#        half_spar = nodes_spar[0:-1:2]
+#        half_spar_rev = nodes_spar_rev[0:-1:2]
+#        s_red = []
+#        s_int = 0
+#        
+#        for i in range(0,len(half_incl)-2,2):
+#            s_int += 1/(G*tsk)*(half_incl[i+2] - half_incl[i])
+#            (s_red).append(s_int)
+#        for i in range(0,len(half_spar)-2,2):
+#            s_int += 1/(G*tsp)*(half_spar[i+2]-half_spar[i])
+#            (s_red).append(s_int)
+#        for i in range(0,len(half_spar_rev)-2,2):
+#            s_int += 1/(G*tsp)*(half_spar_rev[i+2] - half_spar_rev[i])
+#            (s_red).append(s_int)
+#            
+#        return np.array(s_red)
     
-    def denom_cell_2():
-        
-        half_incl = nodes_skin[0:-1:2]
-        half_spar = nodes_spar[0:-1:2]
-        half_spar_rev = nodes_spar_rev[0:-1:2]
-        s_red = []
-        s_int = 0
-        
-        for i in range(0,len(half_incl)-2,2):
-            s_int += 1/(G*tsk)*(half_incl[i+2] - half_incl[i])
-            (s_red).append(s_int)
-        for i in range(0,len(half_spar)-2,2):
-            s_int += -1/(G*tsp)*(half_spar[i+2]-half_spar[i])
-            (s_red).append(s_int)
-        for i in range(0,len(half_spar_rev)-2,2):
-            s_int += 1/(G*tsp)*(half_spar_rev[i+2] - half_spar_rev[i])
-            (s_red).append(s_int)
-            
-        return np.array(s_red)
-    
-    qred_1 = - np.sum(circle_red() + circle_red_rev() + spar_red() + spar_red_rev())/np.sum(denom_cell_1())
-    qred_2 = - np.sum(incl_red()[0] + incl_red()[1] - spar_red() - spar_red_rev())/np.sum(denom_cell_2())
+    qred_1 = - np.sum((circle_red() + circle_red_rev() - spar_red() - spar_red_rev()))/(np.pi*(h*0.5)/(G*tsk) + h/(G*tsp))
+    qred_2 = - np.sum((incl_red()[0] + incl_red()[1] + spar_red() + spar_red_rev()))/(2*lsk/(G*tsk) + h/(G*tsp))
     
     return qred_1,qred_2
 
@@ -356,46 +357,42 @@ def Moment_Eq(I_zz):
     half_circle_rev = nodes_circle_rev[0:-1:2]
     half_incl = nodes_skin[0:-1:2]
     
-    def force_circle(q_tot):
+    def force_circle():
         q_tot = []
-
-        half_circle = nodes_circle[0:-1:2]
         q_int = 0
         for i in range(0,len(half_circle)-2,2):
-            q_int += (half_circle[i+2] - half_circle[i])/6 * (qb_circle[i+2] + 4*qb_circle[i+1] + qb_circle[i])
+            q_int = (half_circle[i+2] - half_circle[i])/6 * (qt_circle[i+2] + 4*qt_circle[i+1] + qt_circle[i])
             (q_tot).append(q_int)
         return np.array(q_tot)
     
-    def force_circle_rev(q_tot):
+    def force_circle_rev():
         q_tot = []
-        half_circle_rev = nodes_circle_rev[0:-1:2]
         q_int = 0
         for i in range(0,len(half_circle_rev)-2,2):
-            q_int += (half_circle_rev[i+2] - half_circle_rev[i])/6 * (qb_circle_rev[i+2] + 4*qb_circle_rev[i+1] + qb_circle_rev[i])
+            q_int = (half_circle_rev[i+2] - half_circle_rev[i])/6 * (qt_circle_rev[i+2] + 4*qt_circle_rev[i+1] + qt_circle_rev[i])
             (q_tot).append(q_int)
         return np.array(q_tot)
 
-    def force_incl(q_tot_1,q_tot_2):
+    def force_incl():
         q_tot_1 = []
         q_tot_2 = []
-        half_incl = nodes_skin[0:-1:2]
         q_int_1 = 0
         q_int_2 = 0
         for i in range(0,len(half_incl)-2,2):
-            q_int_1 += (half_incl[i+2]-half_incl[i])/6 *(qb_incl_1[i+2] + 4*qb_incl_1[i+1] + qb_incl_1[i])
-            q_int_2 += (half_incl[i+2]-half_incl[i])/6 *(qb_incl_2[i+2] + 4*qb_incl_2[i+1] + qb_incl_2[i])
+            q_int_1 = (half_incl[i+2]-half_incl[i])/6 *(qt_incl_1[i+2] + 4*qt_incl_1[i+1] + qt_incl_1[i])
+            q_int_2 = (half_incl[i+2]-half_incl[i])/6 *(qt_incl_2[i+2] + 4*qt_incl_2[i+1] + qt_incl_2[i])
             (q_tot_1).append(q_int_1)
             (q_tot_2).append(q_int_2)
         return np.array(q_tot_1), np.array(q_tot_2)
     
 
-    Fsum_circ = force_circle(qt_circle)
-    Fsum_circ_rev = force_circle_rev(qt_circle_rev)
-    Fsum_incl_1,Fsum_incl_2 = force_incl(qt_incl_1,qt_incl_2)
+    Fsum_circ = force_circle()
+    Fsum_circ_rev = force_circle_rev()
+    Fsum_incl_1,Fsum_incl_2 = force_incl()
     arm_circ = h/2
     arm_incl = h/2 * np.sin(np.pi/2 - beta_rad)
 
-    eta = (np.sum(Fsum_circ) + np.sum(Fsum_circ_rev))*arm_circ + arm_incl*(np.sum(Fsum_incl_1) + np.sum(Fsum_incl_2))
+    eta = (np.sum(Fsum_circ) + np.sum(Fsum_circ_rev))*arm_circ + 2*arm_incl*(np.sum(Fsum_incl_1) + np.sum(Fsum_incl_2))
     
     return eta
 
