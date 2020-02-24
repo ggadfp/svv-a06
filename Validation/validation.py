@@ -48,6 +48,12 @@ jamu = jamu.astype(np.float)
 xyzn = np.genfromtxt("B737.inp", dtype=str, skip_header=9, skip_footer=(14594 - 6598), delimiter=",")
 xyzn = xyzn.astype(np.float)
 
+# reaction forces of assembly
+reac = np.genfromtxt("B737.rpt", dtype=str, skip_header=59928, skip_footer=(5), delimiter="")
+reac = reac.astype(np.float)
+
+print(reac)
+
 #print(xyzn)
 
 
