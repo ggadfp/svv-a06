@@ -318,11 +318,22 @@ def tripleinteg_spline_list(s_coeff,xvec,n):
     third_integral = [integ_spline(coeff_s_integral,i,np.linspace(0,la,n+1)) for i in np.linspace(0,la,n+1)]
     return third_integral
 #%%
+def quadrupleinteg_spline(s_coeff,xloc,xvec,n):
+    third_integral_full = tripleinteg_spline_list(s_coeff, xvec, n)
+    coeff_t_integral = linearspline(len(np.linspace(0,la,n+1)),np.linspace(0,la,n+1),third_integral_full)
+    fourth_integral = integ_spline(coeff_t_integral,xloc,np.linspace(0,la,n+1))
+    return fourth_integral
+def quadrupleinteg_spline_list(s_coeff,xvec,n):
+    third_integral_full = tripleinteg_spline_list(s_coeff, xvec, n)
+    coeff_t_integral = linearspline(len(np.linspace(0,la,n+1)),np.linspace(0,la,n+1),third_integral_full)
+    fourth_integral = [integ_spline(coeff_t_integral,i,np.linspace(0,la,n+1)) for i in np.linspace(0,la,n+1)]
+    return fourth_integral 
+#%%
 start_time = time.time()
 
-n = 100
+n = 100 #number of interpolating splines
 
-test_data = x[0]
+test_data = load
 coeff_testing = linearspline(Nx,x[0],test_data)
 test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
 integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
@@ -330,32 +341,20 @@ print("Integral 1 took", time.time() - start_time, "to run")
 integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,n)
 print("Integral 1+2 took", time.time() - start_time, "to run")
 integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,n)
+print("Integral 1+2+3 took", time.time() - start_time, "to run")
+integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,n)
 
-plt.plot(test_data,test_data)
+# plt.plot(test_data,test_data)
 plt.scatter(np.linspace(0,la,len(test_returned_values)),test_returned_values)
-plt.plot(test_data,np.array(test_data)**2/2)
+# plt.plot(test_data,np.array(test_data)**2/2)
 plt.scatter(np.linspace(0,la,len(integral_test)),integral_test)
-plt.plot(test_data,np.array(test_data)**3/6)
+# plt.plot(test_data,np.array(test_data)**3/6)
 plt.scatter(np.linspace(0,la,len(integral_test_1)),integral_test_1)
-plt.plot(test_data,np.array(test_data)**4/24)
-# plt.scatter(np.linspace(0,la,len(integral_test_2)),integral_test_2)
+# plt.plot(test_data,np.array(test_data)**4/24)
+plt.scatter(np.linspace(0,la,len(integral_test_2)),integral_test_2)
+# plt.plot(test_data,np.array(test_data)**5/120)
+plt.scatter(np.linspace(0,la,len(integral_test_3)),integral_test_3)
 plt.show()
 
 print("My program took", time.time() - start_time, "to run")
-#%%
-##making a torque distribution plot to check if it makes sense
-#torque_dist = []
-#for i in range(2001):
-#    torque_dist.append(int_spline(s_coeff_torque,0,i*la/2000,x[0]))
-#plt.plot(np.linspace(0,la,num=2001),torque_dist)
-#plt.plot(x[0],torque)
-## plt.scatter(np.linspace(0,la,num=2001),torque_dist)
-#plt.show()
-##making a load distribution plot
-#load_dist = []
-#for i in range(201):
-#    load_dist.append(int_spline(s_coeff_load,4,i*la/200,x[0]))
-#plt.plot(np.linspace(0,la,num=201),load_dist)
-## plt.scatter(np.linspace(0,la,num=2001),torque_dist)
-#plt.show()
 
