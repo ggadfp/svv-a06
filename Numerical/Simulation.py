@@ -224,29 +224,17 @@ def linearspline(Nsw,xvec,data):
     
     return s_coeff
     
-#%%
-    
+#%%   
 s_coeff_torque =  linearspline(Nx,x[0,:],torque)
 s_coeff_load = linearspline(Nx,x[0,:],load)
 
 #checking if the splines have points and derivatives that connect
 r_1 = [0]*(Nx-1)
-r_2 = [0]*(Nx-1)
-r_3 = [0]*(Nx-1)
 for i in range(Nx-2):
-    si = (s_coeff_torque[i,0] +
-          s_coeff_torque[i,1]*(x[0,i+1]-x[0,i]) +
-          s_coeff_torque[i,2]*(x[0,i+1]-x[0,i])**2 +
-          s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**3)
-    sid = (s_coeff_torque[i,1] +
-          2*s_coeff_torque[i,2]*(x[0,i+1]-x[0,i]) +
-          3*s_coeff_torque[i,3]*(x[0,i+1]-x[0,i])**2)
-    sidd = (2*s_coeff_torque[i,2] +
-          6*s_coeff_torque[i,3]*(x[0,i+1]-x[0,i]))
-    r_1[i] = abs(si-s_coeff_torque[i+1,0])    
-    r_2[i] = abs(si-s_coeff_torque[i+1,1])
-    r_3[i] = abs(si-2*s_coeff_torque[i+1,2])
-   
+    si = (s_coeff_load[i,0] +
+          s_coeff_load[i,1]*(x[0,i+1]-x[0,i]))
+    r_1[i] = abs(si-s_coeff_load[i+1,0])    
+
 #%%
 #adding the beginning and end points
 xfull = np.vstack(([0],x[0].reshape((len(x[0]),1)),[la]))
@@ -329,32 +317,32 @@ def quadrupleinteg_spline_list(s_coeff,xvec,n):
     fourth_integral = [integ_spline(coeff_t_integral,i,np.linspace(0,la,n+1)) for i in np.linspace(0,la,n+1)]
     return fourth_integral 
 #%%
-start_time = time.time()
+# start_time = time.time()
 
-n = 100 #number of interpolating splines
+# n = 100 #number of interpolating splines
 
-test_data = load
-coeff_testing = linearspline(Nx,x[0],test_data)
-test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
-integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
-print("Integral 1 took", time.time() - start_time, "to run")
-integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,n)
-print("Integral 1+2 took", time.time() - start_time, "to run")
-integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,n)
-print("Integral 1+2+3 took", time.time() - start_time, "to run")
-integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,n)
+# test_data = x[0]
+# coeff_testing = linearspline(Nx,x[0],test_data)
+# test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
+# integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
+# print("Integral 1 took", time.time() - start_time, "to run")
+# integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,n)
+# print("Integral 1+2 took", time.time() - start_time, "to run")
+# integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,n)
+# print("Integral 1+2+3 took", time.time() - start_time, "to run")
+# integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,n)
 
-# plt.plot(test_data,test_data)
-plt.scatter(np.linspace(0,la,len(test_returned_values)),test_returned_values)
+# plt.plot(x[0],test_data)
+# plt.scatter(np.linspace(0,la,len(test_returned_values)),test_returned_values)
 # plt.plot(test_data,np.array(test_data)**2/2)
-plt.scatter(np.linspace(0,la,len(integral_test)),integral_test)
+# plt.scatter(np.linspace(0,la,len(integral_test)),integral_test)
 # plt.plot(test_data,np.array(test_data)**3/6)
-plt.scatter(np.linspace(0,la,len(integral_test_1)),integral_test_1)
+# plt.scatter(np.linspace(0,la,len(integral_test_1)),integral_test_1)
 # plt.plot(test_data,np.array(test_data)**4/24)
-plt.scatter(np.linspace(0,la,len(integral_test_2)),integral_test_2)
+# plt.scatter(np.linspace(0,la,len(integral_test_2)),integral_test_2)
 # plt.plot(test_data,np.array(test_data)**5/120)
-plt.scatter(np.linspace(0,la,len(integral_test_3)),integral_test_3)
-plt.show()
+# plt.scatter(np.linspace(0,la,len(integral_test_3)),integral_test_3)
+# plt.show()
 
-print("My program took", time.time() - start_time, "to run")
+# print("Simulation.py took", time.time() - start_time, "to run")
 
