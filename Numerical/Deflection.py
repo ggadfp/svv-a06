@@ -16,8 +16,8 @@ start_time = time.time()
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
 nodes = 100
-sim.s_coeff_load = sim.s_coeff_load * 0
-sim.s_coeff_torque = sim.s_coeff_torque * 0
+# sim.s_coeff_load = sim.s_coeff_load * 0
+# sim.s_coeff_torque = sim.s_coeff_torque * 0
 
 # From BC 1 (check Simulation Plan)
 e[0] = (sim.doubleinteg_spline(sim.s_coeff_load, sim.la, sim.xfull, nodes)+
