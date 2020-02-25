@@ -7,6 +7,7 @@ Created on Sun Feb 16 18:28:18 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
+import Parameters as c
 
 #%%
 
@@ -37,11 +38,11 @@ def meshCreator():
     
     for i in range(1,Nz+1):
         for j in range(Nx):
-            zmesh[i-1,j-1] = h/2 - 1/2 * (Ca/2 * (1-np.cos(theta_z[i-1])) + Ca/2 * (1-np.cos(theta_z[i])))
+            zmesh[i-1,j-1] = c.h/2 - 1/2 * (c.Ca/2 * (1-np.cos(theta_z[i-1])) + c.Ca/2 * (1-np.cos(theta_z[i])))
         
     for j in range(Nz):
         for i in range(1,Nx+1):
-            xmesh[j-1,i-1] = 1/2 * (la/2 * (1-np.cos(theta_x[i-1])) + la/2 * (1-np.cos(theta_x[i])))
+            xmesh[j-1,i-1] = 1/2 * (c.la/2 * (1-np.cos(theta_x[i-1])) + c.la/2 * (1-np.cos(theta_x[i])))
         
     return xmesh,zmesh
 
