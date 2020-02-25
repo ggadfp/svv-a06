@@ -15,9 +15,12 @@ start_time = time.time()
 #We now wnat to create the 12x12 matrix and the vector of BCs e to solve for the unknown forces thanks to our deflection insights
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
+nodes = 100
+sim.s_coeff_load = sim.s_coeff_load * 0
+sim.s_coeff_torque = sim.s_coeff_torque * 0
 
 # From BC 1 (check Simulation Plan)
-e[0] = (sim.doubleinteg_spline(sim.s_coeff_load, sim.la, sim.x[0], 1000)+
+e[0] = (sim.doubleinteg_spline(sim.s_coeff_load, sim.la, sim.xfull, nodes)+
         sim.P*np.sin(sim.theta_rad)*(sim.la-sim.x2-sim.xa/2))
 mat_defl[0] = [
     (sim.la-sim.x1),
@@ -44,7 +47,7 @@ mat_defl[1] = [
     ] 
 print("BC1+2 took", time.time() - start_time, "to run")
 # From BC 3 (check Simulation Plan)
-e[2] = (sim.integ_spline(sim.s_coeff_torque,sim.la,sim.x[0])+
+e[2] = (sim.integ_spline(sim.s_coeff_torque,sim.la,sim.xfull)+
         sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad)))
 mat_defl[2] = [
     0,0,0,0,0,0,
@@ -53,7 +56,7 @@ mat_defl[2] = [
     ]
 print("BC1+2+3 took", time.time() - start_time, "to run")
 # From BC 4 (check Simulation Plan)
-e[3] = (sim.integ_spline(sim.s_coeff_load,sim.la,sim.x[0])+
+e[3] = (sim.integ_spline(sim.s_coeff_load,sim.la,sim.xfull)+
         sim.P*np.sin(sim.theta_rad))
 mat_defl[3] = [
     1,
@@ -80,7 +83,7 @@ mat_defl[4] = [
     ]
 print("BC1+2+3+4+5 took", time.time() - start_time, "to run")
 # From BC 6 (check Simulation Plan)
-e[5] = sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x2,sim.x[0],1000)
+e[5] = sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x2,sim.xfull,nodes)
 mat_defl[5] = [
     (sim.x2-sim.x1)**3/6,
     0,
@@ -112,7 +115,7 @@ mat_defl[6] = [
     ]
 print("BC1+2+3+4+5+6+7 took", time.time() - start_time, "to run")
 # From BC 8 (check Simulation Plan)
-e[7] = (sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x1,sim.x[0],1000)/(sim.E*sim.Izz)+
+e[7] = (sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x1,sim.xfull,nodes)/(sim.E*sim.Izz)+
         sim.d1*np.cos(sim.theta_rad))
 mat_defl[7] = [
     0,0,0,0,0,0,
@@ -135,8 +138,8 @@ mat_defl[8] = [
     ]
 print("BC1+2+3+4+5+6+7+8+9 took", time.time() - start_time, "to run")
 # From BC 10 (check Simulation Plan)
-e[9] = (sim.d3*np.cos(sim.theta_rad)+
-        sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x3,sim.x[0],1000)+
+e[9] = (sim.d3*np.cos(sim.theta_rad)*(sim.E*sim.Izz)+
+        sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x3,sim.xfull,nodes)+
         sim.P*np.sin(sim.theta_rad)*(sim.x3-sim.x2-sim.xa/2)**3/6)
 mat_defl[9] = [
     (sim.x3-sim.x1)**3/6,
@@ -168,7 +171,7 @@ mat_defl[10] = [
     ]
 print("BC1+2+3+4+5+6+7+8+9+10+11 took", time.time() - start_time, "to run")
 # From BC 12 (check Simulation Plan)
-e[11] = sim.doubleinteg_spline(sim.s_coeff_torque,sim.x2-sim.xa/2,sim.x[0],1000)
+e[11] = sim.doubleinteg_spline(sim.s_coeff_torque,sim.x2-sim.xa/2,sim.xfull,nodes)
 mat_defl[11] = [
     0,0,0,0,0,0,0,0,0,0,0,
     sim.G*(sim.Iyy+sim.Izz)
@@ -177,8 +180,6 @@ print("BC1+2+3+4+5+6+7+8+9+10+11+12 took", time.time() - start_time, "to run")
 
 #SOLVING FOR ALL THE UNKNOWN FORCES
 unknowns = np.linalg.inv(mat_defl).dot(e)
-
-print("Deflection took", time.time() - start_time, "to run")
 
 #%%
 def macaulay(xloc,start,n):
@@ -189,29 +190,10 @@ def macaulay(xloc,start,n):
         return d**n
 
 #%%
-# MOMENT IN Z SPANWISE
-    
-def M_z(xloc):
-    
-    M_z = (sim.doubleinteg_spline(sim.s_coeff_load, xloc, sim.x[0], 100)
-     +sim.P*np.sin(sim.theta_rad)*(sim.la-sim.x2-sim.xa/2)*macaulay(xloc,(sim.x2+sim.xa/2),1)
-     - unknowns[0]*macaulay(xloc,sim.x1,1)
-     - unknowns[1]*macaulay(xloc,sim.x2,1)
-     - unknowns[2]*macaulay(xloc,sim.x3,1)
-     - unknowns[6]*np.sin(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),1))
-    # print(sim.doubleinteg_spline(sim.s_coeff_load, xloc, sim.x[0], 1000))
-    # print(sim.P*np.sin(sim.theta_rad)*(sim.la-sim.x2-sim.xa/2)*macaulay(xloc,(sim.x2+sim.xa/2),1))
-    return M_z
-
-# print(M_z(sim.la))
-
-plt.plot(np.linspace(0,sim.la,101),[M_z(i) for i in np.linspace(0,sim.la,101)])
-
-#%%
 # SHEAR FORCE IN Y SPANWISE
 
 def S_y(xloc):
-    S_y = (sim.integ_spline(sim.s_coeff_load,xloc,sim.x[0])
+    S_y = (sim.integ_spline(sim.s_coeff_load,xloc,sim.xfull)
            + sim.P*np.sin(sim.theta_rad)*macaulay(xloc,(sim.x2+sim.xa/2),0)
            - unknowns[0]*macaulay(xloc,sim.x1,0)
            - unknowns[1]*macaulay(xloc,sim.x2,0)
@@ -221,14 +203,35 @@ def S_y(xloc):
     
     return S_y
 
-plt.plot(np.linspace(0,sim.la,101),[S_y(i) for i in np.linspace(0,sim.la,101)])
+Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,101)]
+plt.show()
+print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot took", time.time() - start_time, "to run")
+
+#%%
+# MOMENT IN Z SPANWISE
+    
+def M_z(xloc):
+    
+    M_z = (sim.doubleinteg_spline(sim.s_coeff_load, xloc, sim.xfull, nodes)
+     +sim.P*np.sin(sim.theta_rad)*(sim.la-sim.x2-sim.xa/2)*macaulay(xloc,(sim.x2+sim.xa/2),1)
+     - unknowns[0]*macaulay(xloc,sim.x1,1)
+     - unknowns[1]*macaulay(xloc,sim.x2,1)
+     - unknowns[2]*macaulay(xloc,sim.x3,1)
+     - unknowns[6]*np.sin(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),1))
+    
+    return M_z
+
+# print(M_z(sim.la))
+
+Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,101)]
+print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot took", time.time() - start_time, "to run")
 
 #%%
 # SLOPE IN Y SPANWISE
 
 def dvy_dx(xloc):
     
-    dvy_dx = -(sim.tripleinteg_spline(sim.s_coeff_load,xloc,sim.x[0],100)
+    dvy_dx = -(sim.tripleinteg_spline(sim.s_coeff_load,xloc,sim.xfull,nodes)
               + sim.P*np.sin(sim.theta_rad)/2*macaulay(xloc,(sim.x2+sim.xa/2),2)
               - unknowns[0]/2*macaulay(xloc,sim.x1,2)
               - unknowns[1]/2*macaulay(xloc,sim.x2,2)
@@ -238,25 +241,61 @@ def dvy_dx(xloc):
     
     return dvy_dx
 
-plt.plot(np.linspace(0,sim.la,101),[dvy_dx(i) for i in np.linspace(0,sim.la,101)])
+dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,101)]
+plt.show()
+print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot+dvydx_plot took", time.time() - start_time, "to run")
 
 #%%
 # DEFLECTION IN Y SPANWISE
 
+# # From BC 8 (check Simulation Plan)
+# e[7] = (sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x1,sim.xfull,nodes)/(sim.E*sim.Izz)+
+#         sim.d1*np.cos(sim.theta_rad))
+# mat_defl[7] = [
+#     0,0,0,0,0,0,
+#     0,
+#     sim.x1,
+#     1,
+#     0,0,0
+#     ]
+
 def deflection_y(xloc):
     
-    def_y = -(sim.quadrupleinteg_spline(sim.s_coeff_load,xloc,sim.x[0],100)
+    def_y = -(sim.quadrupleinteg_spline(sim.s_coeff_load,xloc,sim.xfull,nodes)
               + sim.P*np.sin(sim.theta_rad)/6*macaulay(xloc,(sim.x2+sim.xa/2),3)
               - unknowns[0]/6*macaulay(xloc,sim.x1,3)
               - unknowns[1]/6*macaulay(xloc,sim.x2,3)
-              - unknowns[1]/6*macaulay(xloc,sim.x3,3)
+              - unknowns[2]/6*macaulay(xloc,sim.x3,3)
               - unknowns[6]*np.sin(sim.theta_rad)/6*macaulay(xloc,(sim.x2-sim.xa/2),3) 
               )/(sim.E*sim.Izz) +unknowns[7]*xloc+unknowns[8]
     return def_y
 
-plt.plot(np.linspace(0,sim.la,101),[deflection_y(i) for i in np.linspace(0,sim.la,101)])
+print(sim.d1*np.cos(sim.theta_rad),deflection_y(sim.x1))
+print(deflection_y(sim.x2))
+print(sim.d3*np.cos(sim.theta_rad),deflection_y(sim.x3))
+
+deflectiony_dist = [deflection_y(i) for i in np.linspace(0,sim.la,101)]
+plt.show()
+print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot+dvydx_plot+deflectiony_plot took", time.time() - start_time, "to run")
 
 #%%
+x = np.linspace(0,sim.la,101)
+fig, axs = plt.subplots(2, 2)
+axs[0, 0].plot(x, Sy_dist)
+axs[0, 0].set_title('Axis [0, 0]')
+axs[0, 1].plot(x, Mz_dist, 'tab:orange')
+axs[0, 1].set_title('Axis [0, 1]')
+axs[1, 0].plot(x, dvydx_dist, 'tab:green')
+axs[1, 0].set_title('Axis [1, 0]')
+axs[1, 1].plot(x, deflectiony_dist, 'tab:red')
+axs[1, 1].set_title('Axis [1, 1]')
 
+for ax in axs.flat:
+    ax.set(xlabel='x-label', ylabel='y-label')
 
+# Hide x labels and tick labels for top plots and y ticks for right plots.
+for ax in axs.flat:
+    ax.label_outer()
+
+print("Deflection took", time.time() - start_time, "to run")
 
