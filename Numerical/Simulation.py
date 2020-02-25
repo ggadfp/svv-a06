@@ -127,11 +127,14 @@ Izz = MoI_zz(Y_locations,Boom_area,Asp,tsp,Ask_semi,Ask_incl,tsk,lsk,Ca,h/2,beta
 
 
 x,z = readAeroload.meshCreator(Nz,Nx,Ca,la,h)
-load,pointapp = readAeroload.zload_zpoint(Nz,Nx,z)
 
+load,pointapp = readAeroload.zload_zpoint(Nz,Nx,z)
 torque = np.zeros((Nx,1))
 for i in range(Nx):
     torque[i] = load[i]*pointapp[i]
+    
+# load = np.ones(len(x[0,:]))*50e3
+# torque = load*arm
 
 #%%
 #  WE'RE NOT USING THIS

@@ -126,7 +126,7 @@ mat_defl[7] = [
     ]
 print("BC1+2+3+4+5+6+7+8 took", time.time() - start_time, "to run")
 # From BC 9 (check Simulation Plan)
-e[8] = sim.d1*np.sin(sim.theta_rad)
+e[8] = -sim.d1*np.sin(sim.theta_rad)
 mat_defl[8] = [
     0,0,0,0,0,0,
     0,
@@ -204,8 +204,7 @@ def S_y(xloc):
     return S_y
 
 Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,101)]
-plt.show()
-print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot took", time.time() - start_time, "to run")
+print("BCs+Sy took", time.time() - start_time, "to run")
 
 #%%
 # MOMENT IN Z SPANWISE
@@ -213,7 +212,7 @@ print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot took", time.time() - start_time, "to
 def M_z(xloc):
     
     M_z = (sim.doubleinteg_spline(sim.s_coeff_load, xloc, sim.xfull, nodes)
-     +sim.P*np.sin(sim.theta_rad)*(sim.la-sim.x2-sim.xa/2)*macaulay(xloc,(sim.x2+sim.xa/2),1)
+     +sim.P*np.sin(sim.theta_rad)*macaulay(xloc,(sim.x2+sim.xa/2),1)
      - unknowns[0]*macaulay(xloc,sim.x1,1)
      - unknowns[1]*macaulay(xloc,sim.x2,1)
      - unknowns[2]*macaulay(xloc,sim.x3,1)
@@ -224,7 +223,7 @@ def M_z(xloc):
 # print(M_z(sim.la))
 
 Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,101)]
-print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot took", time.time() - start_time, "to run")
+print("BCs+Sy+Mz took", time.time() - start_time, "to run")
 
 #%%
 # SLOPE IN Y SPANWISE
@@ -235,29 +234,17 @@ def dvy_dx(xloc):
               + sim.P*np.sin(sim.theta_rad)/2*macaulay(xloc,(sim.x2+sim.xa/2),2)
               - unknowns[0]/2*macaulay(xloc,sim.x1,2)
               - unknowns[1]/2*macaulay(xloc,sim.x2,2)
-              - unknowns[1]/2*macaulay(xloc,sim.x3,2)
+              - unknowns[2]/2*macaulay(xloc,sim.x3,2)
               - unknowns[6]*np.sin(sim.theta_rad)/2*macaulay(xloc,(sim.x2-sim.xa/2),2) 
               )/(sim.E*sim.Izz) +unknowns[7]
     
     return dvy_dx
 
 dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,101)]
-plt.show()
-print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot+dvydx_plot took", time.time() - start_time, "to run")
+print("BCs+Sy+Mz+dvydx took", time.time() - start_time, "to run")
 
 #%%
 # DEFLECTION IN Y SPANWISE
-
-# # From BC 8 (check Simulation Plan)
-# e[7] = (sim.quadrupleinteg_spline(sim.s_coeff_load,sim.x1,sim.xfull,nodes)/(sim.E*sim.Izz)+
-#         sim.d1*np.cos(sim.theta_rad))
-# mat_defl[7] = [
-#     0,0,0,0,0,0,
-#     0,
-#     sim.x1,
-#     1,
-#     0,0,0
-#     ]
 
 def deflection_y(xloc):
     
@@ -275,27 +262,96 @@ print(deflection_y(sim.x2))
 print(sim.d3*np.cos(sim.theta_rad),deflection_y(sim.x3))
 
 deflectiony_dist = [deflection_y(i) for i in np.linspace(0,sim.la,101)]
-plt.show()
-print("BC1+2+3+4+5+6+7+8+9+10+11+12+Sy_plot+Mz_plot+dvydx_plot+deflectiony_plot took", time.time() - start_time, "to run")
+print("BCs+Sy+Mz+dvydx+deflectiony took", time.time() - start_time, "to run")
 
 #%%
-x = np.linspace(0,sim.la,101)
+#SHEAR FORCE IN Z SPANWISE
+
+def S_z(xloc):
+    Sz = (+ sim.P*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2+sim.xa/2),0)
+          - unknowns[3]*macaulay(xloc,sim.x1,0)
+          - unknowns[4]*macaulay(xloc,sim.x2,0)
+          - unknowns[5]*macaulay(xloc,sim.x3,0)
+          - unknowns[6]*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),0)
+          )
+    return Sz
+
+Sz_dist = [S_z(i) for i in np.linspace(0,sim.la,101)]
+print("BCs+(all y)+Sz took", time.time() - start_time, "to run")
+
+#%%
+# MOMENT IN Y SPANWISE
+    
+def M_y(xloc):
+    
+    M_y = (+sim.P*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2+sim.xa/2),1)
+           - unknowns[3]*macaulay(xloc,sim.x1,1)
+           - unknowns[4]*macaulay(xloc,sim.x2,1)
+           - unknowns[5]*macaulay(xloc,sim.x3,1)
+           - unknowns[6]*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),1))    
+    return M_y
+
+My_dist = [M_y(i) for i in np.linspace(0,sim.la,101)]
+print("BCs+(all y)+Sz+My took", time.time() - start_time, "to run")
+
+#%%
+# SLOPE IN Z SPANWISE
+
+def dvz_dx(xloc):
+    
+    dvz_dx = -(+ sim.P*np.cos(sim.theta_rad)/2*macaulay(xloc,(sim.x2+sim.xa/2),2)
+              - unknowns[3]/2*macaulay(xloc,sim.x1,2)
+              - unknowns[4]/2*macaulay(xloc,sim.x2,2)
+              - unknowns[5]/2*macaulay(xloc,sim.x3,2)
+              - unknowns[6]*np.cos(sim.theta_rad)/2*macaulay(xloc,(sim.x2-sim.xa/2),2) 
+              )/(sim.E*sim.Iyy) +unknowns[9]
+    
+    return dvz_dx
+
+dvzdx_dist = [dvz_dx(i) for i in np.linspace(0,sim.la,101)]
+print("BCs+(all y)+Sz+My+dvzdx took", time.time() - start_time, "to run")
+
+#%%
+# DEFLECTION IN Z SPANWISE
+
+def deflection_z(xloc):
+    
+    def_z = -(+ sim.P*np.cos(sim.theta_rad)/6*macaulay(xloc,(sim.x2+sim.xa/2),3)
+              - unknowns[3]/6*macaulay(xloc,sim.x1,3)
+              - unknowns[4]/6*macaulay(xloc,sim.x2,3)
+              - unknowns[5]/6*macaulay(xloc,sim.x3,3)
+              - unknowns[6]*np.cos(sim.theta_rad)/6*macaulay(xloc,(sim.x2-sim.xa/2),3) 
+              )/(sim.E*sim.Iyy) +unknowns[9]*xloc+unknowns[10]
+    return def_z
+
+print(sim.d1*np.sin(sim.theta_rad),deflection_z(sim.x1))
+print(deflection_z(sim.x2))
+print(sim.d3*np.sin(sim.theta_rad),deflection_z(sim.x3))
+
+deflectionz_dist = [deflection_z(i) for i in np.linspace(0,sim.la,101)]
+print("BCs+(all y)+Sz+My+dvzdx+deflectionz took", time.time() - start_time, "to run")
+
+#%%
+axis = np.linspace(0,sim.la,101)
 fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(x, Sy_dist)
-axs[0, 0].set_title('Axis [0, 0]')
-axs[0, 1].plot(x, Mz_dist, 'tab:orange')
-axs[0, 1].set_title('Axis [0, 1]')
-axs[1, 0].plot(x, dvydx_dist, 'tab:green')
-axs[1, 0].set_title('Axis [1, 0]')
-axs[1, 1].plot(x, deflectiony_dist, 'tab:red')
-axs[1, 1].set_title('Axis [1, 1]')
+axs[0, 0].plot(axis, Sy_dist)
+axs[0, 0].set_title('Sy(x)')
+axs[0, 1].plot(axis, Mz_dist, 'tab:orange')
+axs[0, 1].set_title('Mz(x)')
+axs[1, 0].plot(axis, dvydx_dist, 'tab:green')
+axs[1, 0].set_title('dvy/dx (x)')
+axs[1, 1].plot(axis, deflectiony_dist, 'tab:red')
+axs[1, 1].set_title('deflection y (x)')
 
-for ax in axs.flat:
-    ax.set(xlabel='x-label', ylabel='y-label')
-
-# Hide x labels and tick labels for top plots and y ticks for right plots.
-for ax in axs.flat:
-    ax.label_outer()
+#%%
+fig2, axs2 = plt.subplots(2, 2)
+axs2[0, 0].plot(axis, Sz_dist)
+axs2[0, 0].set_title('Sz(x)')
+axs2[0, 1].plot(axis, My_dist, 'tab:orange')
+axs2[0, 1].set_title('My(x)')
+axs2[1, 0].plot(axis, dvzdx_dist, 'tab:green')
+axs2[1, 0].set_title('dvz/dx (x)')
+axs2[1, 1].plot(axis, deflectionz_dist, 'tab:red')
+axs2[1, 1].set_title('deflection z (x)')
 
 print("Deflection took", time.time() - start_time, "to run")
-
