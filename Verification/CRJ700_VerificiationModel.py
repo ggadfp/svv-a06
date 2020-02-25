@@ -64,7 +64,7 @@ _ = crosssection.J                   # torsional constant
 
 ######################## Part IV - Deflection calculations #######################################
 ### Definition of additional parameters
-N = 30     # Number of basis functions to use in Rayleigh-Ritz method (total number of coefficients is 3*N)
+N = 20     # Number of basis functions to use in Rayleigh-Ritz method (total number of coefficients is 3*N)
 E = 72.9*10**9       # E-modulus (Pa)
 G = 27.1*10**9       # G-modulus (Pa)
 
@@ -83,7 +83,7 @@ aileron.addbcss(x3,0.,-ha/2.,m.pi/2-theta,0)
 aileron.addbcss(x2-xa/2.,ha/2.,0,m.pi/2.-theta,0)
 
 """"Define your applied loading; see manual for explanations."""
-aileron.addfpl(x2+xa/2.,ha/2.,0,m.pi/2.-theta,P)
+aileron.addfpl(x2+xa/2.,ha/2.,0,m.pi/2.-theta,-P)
 
 ### Primary functions
 """ The following line computes the deflections. If you do not want to include the aerodynamic loading, simply write
@@ -93,7 +93,7 @@ If you do want to include the aerodynamic loading, let the variable aircraft (se
 Note that the name should be spelled exactly as listed above. Note that if the aircraft you write is inconsistent with the
 geometry you define at the beginning of this file, the program will not return an error, but will simply produce bogus
 results."""
-aileron.compute_deflections(aerodynamicloading=aircraft) ### Switch aerodynamic loading to the aircraft that is being considered
+aileron.compute_deflections() ### Switch aerodynamic loading to the aircraft that is being considered
 
 ### Auxiliary functions
 """" A number of auxiliary functions and results are given to you. """
