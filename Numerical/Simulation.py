@@ -289,7 +289,7 @@ def integ_spline(s_coeff,xloc,xvec):
 #%%
 def doubleinteg_spline(s_coeff,xloc,xvec,n):
     first_integral_full = [integ_spline(s_coeff,i,xvec) for i in np.linspace(0,la,n+1)]
-    coeff_f_integral = linearspline(len(np.linspace(0,la,n+1)),np.linspace(0,la,n+1),first_integral_full)
+    coeff_f_integral  = linearspline(len(np.linspace(0,la,n+1)),np.linspace(0,la,n+1),first_integral_full)
     second_integral = integ_spline(coeff_f_integral,xloc,np.linspace(0,la,n+1))
     return second_integral
 def doubleinteg_spline_list(s_coeff,xvec,n):
