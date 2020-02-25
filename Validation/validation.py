@@ -1,6 +1,8 @@
 # Validation
 import numpy as np
+import itertools
 
+## ----------------IMPORTING FROM B737 INP and RPT-------------------
 
 # nodes
 a = np.genfromtxt("B737.inp", dtype=str, skip_header=9, skip_footer=(14594 - 6598), delimiter=",")
@@ -52,34 +54,23 @@ xyzn = xyzn.astype(np.float)
 reac = np.genfromtxt("B737.rpt", dtype=str, skip_header=59928, skip_footer=(5), delimiter="")
 reac = reac.astype(np.float)
 
-print(reac)
+# nodes and xyz of assembly
+assemb = []
+for q in range(16):
+    
+    assem = np.genfromtxt("B737.inp", dtype=str, skip_header=(14146 + 2*q), skip_footer=(14594 - 14148 - 2*q), delimiter=",")
+    assem = assem.astype(np.float)
+    assem = list(assem)
+    assemb.append(assem) #ff fixen
 
-#print(xyzn)
+assemb = np.array(assemb)
 
 
-f = open("B737.inp", "r")
-lines = f.readlines()
-f.close()
-
-
-
-# # plotting aileron
-
-# import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
-
-# x = a[:,1]
-# y = a[:,2]
-# z = a[:,3]
-
-# plt.scatter(z,y)
-# #plt.show()
-
-#### stresses
+## ------------------------------Extrapolating stresses from the data and putting them in coherent lists sorted in node number--------------------------------
 
 # nodes in elements
 n_in_e = e[:,[1,2,3,4]]
-#print(n_in_e)
+
 
 # von mises loc1
 m1avvallis_b = []
@@ -103,7 +94,7 @@ s2avvallis_j = []
 
 
 for i in range(len(n_in_e)):
-    #print(i)
+    
     
     # Von Mises loc1
     m1val_b = []
@@ -381,7 +372,7 @@ for i in range(len(n_in_e)):
         
     
     
-    
+    ## Taking the mean of the stresses of the elements where the node appears in and take that value as the stresses in the node
     # Von Mises loc1
     m1avval_b = np.mean(m1val_b)
     m1avvallis_b.append(m1avval_b)
@@ -470,13 +461,11 @@ s2xyzn_b = np.c_[xyzn,s2avvallis_b]
 s2xyzn_jb = np.c_[xyzn,s2avvallis_jb]
 s2xyzn_j = np.c_[xyzn,s2avvallis_j]
 
-#print(np.mean(avvallis_b))
-#print(len(avvallis_b))
 
 
-### displacements
+## ---------------------------Extrapolating displacements of the hingeline from the data and putting them in coherent lists sorted in x-----------------
 
-#extracting all points on the hinge line from xyzn
+# extracting all points on the hinge line from xyzn
 
 nn = xyzn[:,0]
 xn = xyzn[:,1]
@@ -492,10 +481,9 @@ for u in range(len(nn)):
         nhinge.append(nn[u])
         xhinge.append(xn[u])
 
-#print(nhinge)
-#print(len(nhinge))
 
-#getting u1-3 for hingeline
+
+# getting u1-3 for hingeline
 
 bu1list = []
 bu2list = []
@@ -531,13 +519,6 @@ for q in range(len(nhinge)):
     ju2list.append(jamu2[node])
     ju3list.append(jamu3[node])
     
-# u1list = np.array(u1list)
-# u2list = np.array(u2list)
-# u3list = np.array(u3list)
-
-#print(u1list)
-
-
 
 nxn = np.vstack([nhinge,xhinge])
 
@@ -568,6 +549,10 @@ jnxu123 = np.transpose(jnxu123)
 
 jnxu123 = jnxu123[np.argsort(jnxu123[:, 1])]
 
-# print(bnxu123)
-# print(jbnxu123)
-# print(jnxu123)
+## -------------------Plotting displacements against x location--------------------
+
+import matplotlib.pyplot as plt
+plt.plot(jbnxu123[:,1], jbnxu123[:,2])
+plt.plot(jbnxu123[:,1], jbnxu123[:,3])
+plt.plot(jbnxu123[:,1], jbnxu123[:,4])
+plt.show()
