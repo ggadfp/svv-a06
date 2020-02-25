@@ -39,7 +39,7 @@ crosssection.compute_bending_properties()   # Run the calculations
 """ A plot of the cross-section, to inspect that the stringers have been placed correctly, and 
 that the position of the centroid makes sense. """
 crosssection.plot_crosssection()     # Plot the cross-section; blue cross is the centroid, red crosses are stringers
-print(crosssection())
+#print(crosssection())
 ### Access to important results
 """" If you desire, you can manually overwrite these values. """
 _ = crosssection.stcoord            # array containing stringer coordinates
@@ -49,7 +49,7 @@ _ = crosssection.zc                 # z-coordinate of the centroid
 _ = crosssection.Iyy                # moment of inertia about y-axis
 _ = crosssection.Izz                # moment of inertia about z-axis
 
-print(crosssection.zc)
+#print(crosssection.zc)
 ######################## Part III - Torsional stiffness calculations #######################################
 ### Primary functions
 """ If you desire, you may disable this line, and manually overwrite the values listed between lines 60-62"""
@@ -102,7 +102,7 @@ aileron.compute_deflections() ### Switch aerodynamic loading to the aircraft tha
 aileron.plotv()             # Plot the deflections in y-direction, its derivative, the bending moment about the z-axis, and the shear force in y.
 aileron.plotw()             # Plot the deflections in z-direction, its derivative, the bending moment about the y-axis, and the shear force in z.
 aileron.plotphi()           # Plot the twist distribution, the torque and the distributed torque.
-
+print(aileron)
 ## For custom post-processing of the solution
 x = np.linspace(0,la,num = 10)  # Subsequent functions accept numpy-arrays
 # Compute the deflections
