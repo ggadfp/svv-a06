@@ -213,3 +213,5 @@ _ = Stressobject.q6f(theta)             # Compute the shear flow distribution in
 _ = Stressobject.sigma6f(theta)         # Compute the direct stress distribution in region 6
 _ = Stressobject.vm6(theta)             # Compute the Von Mises stress distribution in region 6
 _, _ = Stressobject.coord6(theta)       # Compute the z,y-coordinates for region 6
+
+print(crosssection.J)
