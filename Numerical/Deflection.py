@@ -9,13 +9,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import Simulation as sim
 import time
+import CRJ700_VerificiationModel_copy_gabriel as verif
 #%%
 start_time = time.time()
 #[H1y,H2y,H3y,H1z,H2z,H3z,A1,C1,C2,C3,C4,C5]
 #We now wnat to create the 12x12 matrix and the vector of BCs e to solve for the unknown forces thanks to our deflection insights
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
-nodes = 100
+nodes = 20
+plot_points = 21
 # sim.s_coeff_load = sim.s_coeff_load * 0
 # sim.s_coeff_torque = sim.s_coeff_torque * 0
 
@@ -203,7 +205,7 @@ def S_y(xloc):
     
     return S_y
 
-Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,101)]
+Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+Sy took", time.time() - start_time, "to run")
 
 #%%
@@ -222,7 +224,7 @@ def M_z(xloc):
 
 # print(M_z(sim.la))
 
-Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,101)]
+Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+Sy+Mz took", time.time() - start_time, "to run")
 
 #%%
@@ -240,7 +242,7 @@ def dvy_dx(xloc):
     
     return dvy_dx
 
-dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,101)]
+dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+Sy+Mz+dvydx took", time.time() - start_time, "to run")
 
 #%%
@@ -261,7 +263,7 @@ print(sim.d1*np.cos(sim.theta_rad),deflection_y(sim.x1))
 print(deflection_y(sim.x2))
 print(sim.d3*np.cos(sim.theta_rad),deflection_y(sim.x3))
 
-deflectiony_dist = [deflection_y(i) for i in np.linspace(0,sim.la,101)]
+deflectiony_dist = [deflection_y(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+Sy+Mz+dvydx+deflectiony took", time.time() - start_time, "to run")
 
 #%%
@@ -276,7 +278,7 @@ def S_z(xloc):
           )
     return Sz
 
-Sz_dist = [S_z(i) for i in np.linspace(0,sim.la,101)]
+Sz_dist = [S_z(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+(all y)+Sz took", time.time() - start_time, "to run")
 
 #%%
@@ -291,7 +293,7 @@ def M_y(xloc):
            - unknowns[6]*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),1))    
     return M_y
 
-My_dist = [M_y(i) for i in np.linspace(0,sim.la,101)]
+My_dist = [M_y(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+(all y)+Sz+My took", time.time() - start_time, "to run")
 
 #%%
@@ -308,7 +310,7 @@ def dvz_dx(xloc):
     
     return dvz_dx
 
-dvzdx_dist = [dvz_dx(i) for i in np.linspace(0,sim.la,101)]
+dvzdx_dist = [dvz_dx(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+(all y)+Sz+My+dvzdx took", time.time() - start_time, "to run")
 
 #%%
@@ -328,7 +330,7 @@ print(sim.d1*np.sin(sim.theta_rad),deflection_z(sim.x1))
 print(deflection_z(sim.x2))
 print(sim.d3*np.sin(sim.theta_rad),deflection_z(sim.x3))
 
-deflectionz_dist = [deflection_z(i) for i in np.linspace(0,sim.la,101)]
+deflectionz_dist = [deflection_z(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+(all y)+Sz+My+dvzdx+deflectionz took", time.time() - start_time, "to run")
 
 #%%
@@ -341,7 +343,7 @@ def T_span(xloc):
          )
     return T
 
-T_dist = [T_span(i) for i in np.linspace(0,sim.la,101)]
+T_dist = [T_span(i) for i in np.linspace(0,sim.la,plot_points)]
 print("BCs+(all y)+(all z)+T took", time.time() - start_time, "to run")
 
 #%%
@@ -354,10 +356,10 @@ def twist(xloc):
              )/(sim.G*(sim.Izz+sim.Iyy))+unknowns[11]
     return twist
 
-twist_dist = [twist(i) for i in np.linspace(0,sim.la,101)]
+twist_dist = [twist(i) for i in np.linspace(0,sim.la,plot_points)]
 
 #%%
-axis = np.linspace(0,sim.la,101)
+axis = np.linspace(0,sim.la,plot_points)
 fig, axs = plt.subplots(2, 2)
 axs[0, 0].plot(axis, Sy_dist)
 axs[0, 0].set_title('Sy(x)')
@@ -365,7 +367,8 @@ axs[0, 1].plot(axis, Mz_dist, 'tab:orange')
 axs[0, 1].set_title('Mz(x)')
 axs[1, 0].plot(axis, dvydx_dist, 'tab:green')
 axs[1, 0].set_title('dvy/dx (x)')
-axs[1, 1].plot(axis, deflectiony_dist, 'tab:red')
+axs[1, 1].scatter(axis, deflectiony_dist)
+axs[1, 1].plot(axis, verif.defy_v, 'tab:blue')
 axs[1, 1].set_title('deflection y (x)')
 
 #%%
