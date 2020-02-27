@@ -115,7 +115,7 @@ aileron.addbcss(x3,0.,-ha/2.,m.pi/2-theta,0)
 aileron.addbcss(x2-xa/2.,ha/2.,0,m.pi/2.-theta,0)
 
 """"Define your applied loading; see manual for explanations."""
-aileron.addfpl(x2+xa/2.,ha/2.,0,m.pi/2.-theta,P)
+aileron.addfpl(x2+xa/2.,ha/2.,0,m.pi/2.-theta,-P)
 
 ### Primary functions
 """ The following line computes the deflections. If you do not want to include the aerodynamic loading, simply write
@@ -265,7 +265,7 @@ _ = Stressobject.sigma4f(s)         # Compute the direct stress distribution in 
 _ = Stressobject.vm4(s)             # Compute the Von Mises stress distribution in region 4
 _, _ = Stressobject.coord4(s)       # Compute the z,y-coordinates for region 4
 
-y = np.linspace(0,ha/2.,num = 100)
+y = np.linspace(0,-ha/2.,num = 100)
 _ = Stressobject.q5f(y)             # Compute the shear flow distribution in region 5
 _ = Stressobject.sigma5f(y)         # Compute the direct stress distribution in region 5
 _ = Stressobject.vm5(y)             # Compute the Von Mises stress distribution in region 5
