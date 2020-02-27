@@ -15,5 +15,5 @@ git commit
 git push
 
 %%TO SWITCH BRANCHE
-
+ed
 git checkout (Name of branch)
