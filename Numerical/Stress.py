@@ -18,5 +18,8 @@ import ShearDist as sh
 def bending_stress(xloc,yloc,zloc):
     return d.M_z(xloc)*yloc/sim.Izz + d.M_y(xloc)*zloc/sim.Iyy
 
-test = bending_stress(0.25,0,-sim.z_t-(c.Ca-c.h/2))
-print(test*10**(-6))
+
+def shear_stress(xloc,choice):
+    
+    
+    
