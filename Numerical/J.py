@@ -14,12 +14,12 @@ import Parameters as c
 #%%
 def torsion_shear(xloc):
     A1 = 1/2*np.pi*((c.h/2)**2)
-    A2 = 1/2*h*(c.Ca-c.h/2)
+    A2 = 1/2*c.h*(c.Ca-c.h/2)
 
-    l2 = np.pi * h/2
+    l2 = np.pi * c.h/2
 
-    
-    c1 = 1/(2*A1*c.G)*(l2/tsk + c.h/c.tsp) + 1/(2*A2*G)*(c.h/c.tsp)
+    T = d.T_span(xloc)[0]
+    c1 = 1/(2*A1*c.G)*(l2/c.tsk + c.h/c.tsp) + 1/(2*A2*c.G)*(c.h/c.tsp)
     c2 = -(1/(2*A1*c.G)*c.h/c.tsp + 1/(2*A2*c.G)*(2*c.lsk/c.tsk + c.h/c.tsp))
     c3 = -1/(2*A1*c.G)*(l2/c.tsk + c.h/c.tsp)
     c4 = 1/(2*A1*c.G)*c.h/c.tsp
@@ -31,7 +31,7 @@ def torsion_shear(xloc):
 
 
     mat = np.array([[2*A1, 2*A2, 0], [c1, c2, 0], [c3, c4, 1]])
-    sol = np.array([[d.T_span(xloc)],[0],[0]])
+    sol = np.array([[T],[0],[0]])
 
 # mat = np.array([[c11, c12, -1], [c21, c22, -1],[2*A1, 2*A2, 0]])
 # sol = np.array([[0],[0],[T]])
@@ -39,6 +39,11 @@ def torsion_shear(xloc):
     ans = np.matmul(np.linalg.inv(mat), sol)
 # ans = np.linalg.solve(mat,sol)
 
-    J = d.T_span(xloc)/(c.G*ans[2])
+    J = T/(c.G*ans[2])
     
     return ans[0],ans[1],J
+
+def torsion_const():
+    return torsion_shear(0.5)[2]
+
+
