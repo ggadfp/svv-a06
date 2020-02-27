@@ -1,12 +1,15 @@
 #Calculation of the Torsional stiffness J
 import numpy as np
+
 # J = T/(G*(dalpha/dx))
 G = 27.1e09 # [Pa] Shear modulus
-tsk = 1.1e-3 # Thickness of the skin
-tsp = 2.5e-3 # Thickness of the spar
-Ca = 0.484  # Chord length
-h = 17.3e-2 # Aileron height
-A1 = 1/2*np.pi*(h**2)
+tsk = 1.1e-3 # Thickness of the skin [m]
+tsp = 2.5e-3 # Thickness of the spar [m]
+Ca = 0.484  # Chord length [m]
+h = 17.3e-2 # Aileron height [m]
+
+
+A1 = 1/2*np.pi*((h/2)**2)
 A2 = 1/2*h*(Ca-h/2)
 
 l1 = h
