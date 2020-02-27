@@ -324,7 +324,7 @@ def base_shear_z(I_yy):
         q_c = []
         I_c = -c.tsk*c.h/(2*I_yy)
         qval = -0.5*c.Boom_area[0]*(c.Z_locations[0]-sim.z_t)/I_yy
-        print(qval)
+
         count = 0
         for i in range(0,len(nodes_circle)-2,2):
             qval += I_c*(nodes_circle[i+2] - nodes_circle[i])/6 * (-c.h/2*np.cos(nodes_circle[i+2]) +
@@ -428,7 +428,6 @@ def base_shear_z(I_yy):
     
     
     return circle(),circle_rev(),inclined_1(),inclined_2(),spar(),spar_rev()
-test = base_shear_z(sim.Iyy)
 
 def Scy(I_yy):
     qb_circle,qb_circle_rev,qb_incl_1,qb_incl_2,qb_spar,qb_spar_rev = base_shear_z(I_yy)
@@ -458,18 +457,17 @@ def Scy(I_yy):
     
     return xsi
 
-xsi = Scy(sim.Iyy)
 
 #%%
 
-Ic = -c.tsk/(sim.Iyy)
+# Ic = -c.tsk/(sim.Iyy)
 
 
-val = Ic*(-sim.z_t*c.lsk - 0.5*np.cos(c.beta_rad)*c.lsk**2)
-print("approx", test[2][-1] )
-print(c.beta_deg)
+# val = Ic*(-sim.z_t*c.lsk - 0.5*np.cos(c.beta_rad)*c.lsk**2)
+# print("approx", test[2][-1] )
+# print(c.beta_deg)
 
-plt.figure(1)
-plt.plot(nodes_skin[0:-1:2],test[2])
-plt.plot(nodes_skin[-1:0:-2],test[3])
+# plt.figure(1)
+# plt.plot(nodes_skin[0:-1:2],test[2])
+# plt.plot(nodes_skin[-1:0:-2],test[3])
     

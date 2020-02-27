@@ -8,10 +8,10 @@ Created on Thu Feb 20 15:33:26 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+#%%
 # Material properties
-E = 72.9e9 # [Pa] -- E-modulus
-G = 27.1e9 # [Pa] -- Shear modulus
+E = 73.1e9 # [Pa] -- E-modulus
+G = 28e9 # [Pa] -- Shear modulus
 
 # Number of nodes
 Nx = 41 # Spanwise Nodes
