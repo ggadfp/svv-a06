@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import readAeroload
 from mpl_toolkits.mplot3d import Axes3D
 import time
+import scipy as sc
 #%%
 
 # Number of nodes
@@ -322,18 +323,18 @@ def quadrupleinteg_spline_list(s_coeff,xvec,n):
 #%%
 # start_time = time.time()
 
-# n = 100 #number of interpolating splines
+# nodest = 20 #number of interpolating splines
 
 # test_data = x[0]
 # coeff_testing = linearspline(Nx,x[0],test_data)
-# test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
-# integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,n+1)]
+# test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
+# integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
 # print("Integral 1 took", time.time() - start_time, "to run")
-# integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,n)
+# integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,nodest)
 # print("Integral 1+2 took", time.time() - start_time, "to run")
-# integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,n)
+# integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,nodest)
 # print("Integral 1+2+3 took", time.time() - start_time, "to run")
-# integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,n)
+# integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,nodest)
 
 # plt.plot(x[0],test_data)
 # plt.scatter(np.linspace(0,la,len(test_returned_values)),test_returned_values)
