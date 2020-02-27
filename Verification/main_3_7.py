@@ -23,7 +23,7 @@ nst = 13  # -
 d1 = 0.00681  # m
 d3 = 0.02030  # m
 theta = m.radians(26)  # rad
-P = 0 # N
+P = 37.9e+3 # N
 
 
 ######################## Part II - bending stiffness calculations #######################################
