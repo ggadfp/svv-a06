@@ -8,7 +8,7 @@ Created on Thu Feb 20 15:33:26 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+#%%
 # Material properties
 E = 73.1e9 # [Pa] -- E-modulus
 G = 28e9 # [Pa] -- Shear modulus
