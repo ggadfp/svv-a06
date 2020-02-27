@@ -11,6 +11,7 @@ import Simulation as sim
 import time
 import CRJ700_VerificiationModel_copy_gabriel as verif
 import J as tor
+import ShearDist as sd
 #%%
 start_time = time.time()
 #[H1y,H2y,H3y,H1z,H2z,H3z,A1,C1,C2,C3,C4,C5]
@@ -20,6 +21,7 @@ e = np.zeros([12,1])
 nodes = 100
 plot_points = 31
 J = tor.torsion_unit()
+scz = sd.Scz(sim.Izz)
 # sim.s_coeff_load = sim.s_coeff_load * 0
 # sim.s_coeff_torque = sim.s_coeff_torque * 0
 
@@ -342,7 +344,9 @@ def T_span(xloc):
     T = (sim.integ_spline(sim.s_coeff_torque,xloc,sim.xfull)
          +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),0)
          -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),0)
-         )
+         -unknowns[0]*scz*macaulay(xloc,sim.x1,0)*10
+         -unknowns[1]*scz*macaulay(xloc,sim.x2,0)*10
+         -unknowns[2]*scz*macaulay(xloc,sim.x3,0)*10)
     return T
 
 T_dist = [T_span(i) for i in np.linspace(0,sim.la,plot_points)]
@@ -356,7 +360,7 @@ def twist(xloc):
              +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),1)
              -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),1)
              )/(sim.G*(J))+unknowns[11]
-    return twist
+    return twist/10
 
 twist_dist = [twist(i) for i in np.linspace(0,sim.la,plot_points)]
 
@@ -441,7 +445,7 @@ axs3[0, 0].scatter(axis, T_dist)
 axs3[0, 0].plot(verif.x, verif.d2t)
 axs3[0, 0].set_title('T(x)')
 axs3[0, 1].plot(axis, twist_dist)
-axs3[1, 0].plot(verif.x, verif.twist_v, 'tab:orange')
+axs3[0, 1].plot(verif.x, verif.twist_v, 'tab:orange')
 axs3[0, 1].set_title('twist(x)')
 
 print("Deflection took", time.time() - start_time, "to run")
