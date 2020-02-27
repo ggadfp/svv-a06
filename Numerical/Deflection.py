@@ -10,14 +10,16 @@ import matplotlib.pyplot as plt
 import Simulation as sim
 import time
 import CRJ700_VerificiationModel_copy_gabriel as verif
+import J as tor
 #%%
 start_time = time.time()
 #[H1y,H2y,H3y,H1z,H2z,H3z,A1,C1,C2,C3,C4,C5]
 #We now wnat to create the 12x12 matrix and the vector of BCs e to solve for the unknown forces thanks to our deflection insights
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
-nodes = 800
+nodes = 100
 plot_points = 31
+J = tor.torsion_unit()
 # sim.s_coeff_load = sim.s_coeff_load * 0
 # sim.s_coeff_torque = sim.s_coeff_torque * 0
 
@@ -176,7 +178,7 @@ print("BC1+2+3+4+5+6+7+8+9+10+11 took", time.time() - start_time, "to run")
 e[11] = sim.doubleinteg_spline(sim.s_coeff_torque,sim.x2-sim.xa/2,sim.xfull,nodes)
 mat_defl[11] = [
     0,0,0,0,0,0,0,0,0,0,0,
-    sim.G*(sim.Iyy+sim.Izz)
+    sim.G*(J)
     ]
 print("BC1+2+3+4+5+6+7+8+9+10+11+12 took", time.time() - start_time, "to run")
 
@@ -353,7 +355,7 @@ def twist(xloc):
     twist = (sim.doubleinteg_spline(sim.s_coeff_torque,xloc,sim.xfull,nodes)
              +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),1)
              -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),1)
-             )/(sim.G*(sim.Izz+sim.Iyy))+unknowns[11]
+             )/(sim.G*(J))+unknowns[11]
     return twist
 
 twist_dist = [twist(i) for i in np.linspace(0,sim.la,plot_points)]
@@ -438,7 +440,7 @@ fig3, axs3 = plt.subplots(2,2)
 axs3[0, 0].scatter(axis, T_dist)
 axs3[0, 0].plot(verif.x, verif.d2t)
 axs3[0, 0].set_title('T(x)')
-axs3[1, 1].plot(axis, twist_dist)
+axs3[0, 1].plot(axis, twist_dist)
 axs3[1, 0].plot(verif.x, verif.twist_v, 'tab:orange')
 axs3[0, 1].set_title('twist(x)')
 

@@ -7,17 +7,19 @@ Created on Wed Feb 19 09:48:37 2020
 
 
 import numpy as np
+import matplotlib.pyplot as plt
+import Deflection as d
 import Parameters as c
 
 #%%
 
-def torsion_unit():
+def torsion_shear(xloc):
     A1 = 1/2*np.pi*((c.h/2)**2)
     A2 = 1/2*c.h*(c.Ca-c.h/2)
 
     l2 = np.pi * c.h/2
 
-    T = 1
+    T = d.T_span(xloc)[0]
     c1 = 1/(2*A1*c.G)*(l2/c.tsk + c.h/c.tsp) + 1/(2*A2*c.G)*(c.h/c.tsp)
     c2 = -(1/(2*A1*c.G)*c.h/c.tsp + 1/(2*A2*c.G)*(2*c.lsk/c.tsk + c.h/c.tsp))
     c3 = -1/(2*A1*c.G)*(l2/c.tsk + c.h/c.tsp)
@@ -40,8 +42,10 @@ def torsion_unit():
 
     J = T/(c.G*ans[2])
     
-    return J
+    return ans[0],ans[1],J
 
-print(torsion_unit())
+# def torsion_const():
+#     return torsion_shear(0.5)[2]
+
 
 
