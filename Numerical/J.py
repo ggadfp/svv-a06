@@ -46,6 +46,5 @@ def torsion_shear(xloc):
 
 def torsion_const():
     return torsion_shear(0.5)[2]
-#It works
 
 
