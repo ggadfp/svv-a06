@@ -332,6 +332,31 @@ deflectionz_dist = [deflection_z(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+(all y)+Sz+My+dvzdx+deflectionz took", time.time() - start_time, "to run")
 
 #%%
+#TORQUE SPANWISE
+
+def T_span(xloc):
+    T = (sim.integ_spline(sim.s_coeff_torque,xloc,sim.xfull)
+         +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),0)
+         -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),0)
+         )
+    return T
+
+T_dist = [T_span(i) for i in np.linspace(0,sim.la,101)]
+print("BCs+(all y)+(all z)+T took", time.time() - start_time, "to run")
+
+#%%
+#ANGLE OF TWIST SPANWISE
+
+def twist(xloc):
+    twist = (sim.doubleinteg_spline(sim.s_coeff_torque,xloc,sim.xfull,nodes)
+             +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),1)
+             -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),1)
+             )/(sim.G*(sim.Izz+sim.Iyy))+unknowns[11]
+    return twist
+
+twist_dist = [twist(i) for i in np.linspace(0,sim.la,101)]
+
+#%%
 axis = np.linspace(0,sim.la,101)
 fig, axs = plt.subplots(2, 2)
 axs[0, 0].plot(axis, Sy_dist)
@@ -353,5 +378,12 @@ axs2[1, 0].plot(axis, dvzdx_dist, 'tab:green')
 axs2[1, 0].set_title('dvz/dx (x)')
 axs2[1, 1].plot(axis, deflectionz_dist, 'tab:red')
 axs2[1, 1].set_title('deflection z (x)')
+
+#%%
+fig3, axs3 = plt.subplots(2,2)
+axs3[0, 0].plot(axis, T_dist)
+axs3[0, 0].set_title('T(x)')
+axs3[0, 1].plot(axis, twist_dist, 'tab:orange')
+axs3[0, 1].set_title('twist(x)')
 
 print("Deflection took", time.time() - start_time, "to run")
