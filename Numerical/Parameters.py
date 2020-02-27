@@ -8,10 +8,10 @@ Created on Thu Feb 20 15:33:26 2020
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+#%%
 # Material properties
-E = 72.9e9 # [Pa] -- E-modulus
-G = 27.1e9 # [Pa] -- Shear modulus
+E = 73.1e9 # [Pa] -- E-modulus
+G = 28e9 # [Pa] -- Shear modulus
 
 # Number of nodes
 Nx = 41 # Spanwise Nodes
@@ -71,4 +71,4 @@ Y_locations = [0,-h*np.sin(angle_rad)/2,-h/2+bridge*np.sin(beta_rad),-h/2+(bridg
                h/2-(bridge+4*deltast)*np.sin(beta_rad),h/2-(bridge+3*deltast)*np.sin(beta_rad),h/2-(bridge+2*deltast)*np.sin(beta_rad),
                h/2-(bridge+deltast)*np.sin(beta_rad),h/2-bridge*np.sin(beta_rad),h*np.sin(angle_rad)/2]
     
-plt.scatter(-np.array(Z_locations),Y_locations)
+# plt.scatter(-np.array(Z_locations),Y_locations)
