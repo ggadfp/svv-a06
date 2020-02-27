@@ -47,4 +47,5 @@ def torsion_shear(xloc):
 def torsion_const():
     return torsion_shear(0.5)[2]
 
+# Sabri is gay
 
