@@ -93,7 +93,7 @@ If you do want to include the aerodynamic loading, let the variable aircraft (se
 Note that the name should be spelled exactly as listed above. Note that if the aircraft you write is inconsistent with the
 geometry you define at the beginning of this file, the program will not return an error, but will simply produce bogus
 results."""
-aileron.compute_deflections() ### Switch aerodynamic loading to the aircraft that is being considered
+aileron.compute_deflections("CRJ700") ### Switch aerodynamic loading to the aircraft that is being considered
 
 ### Auxiliary functions
 """" A number of auxiliary functions and results are given to you. """
@@ -104,18 +104,18 @@ aileron.compute_deflections() ### Switch aerodynamic loading to the aircraft tha
 # aileron.plotphi()           # Plot the twist distribution, the torque and the distributed torque.
 # print(aileron)
 ## For custom post-processing of the solution
-x = np.linspace(0,la,num = 21)  # Subsequent functions accept numpy-arrays
+x = np.linspace(0,la,num = 101)  # Subsequent functions accept numpy-arrays
 # Compute the deflections
 defy_v, defz_v, twist_v = aileron.eval(x)       # Compute the three deflections
 d1y, d1z, d1t = aileron.fdeval(x)     # Compute their their first order derivative
-d2y, d2z, d2t = aileron.sdeval(x)     # Compute their their second order derivative
+_ ,_ , _ = aileron.sdeval(x)     # Compute their their second order derivative
 _, _, _ = aileron.tdeval(x)     # Compute their their third order derivative
 # Compute the loading
-_ = aileron.Sy(x)             # Compute the shear force in y
-_ = aileron.Sz(x)               # Compute the shear force in z
-_ = aileron.My(x)               # Compute the moment around the y-axis
-_ = aileron.Mz(x)               # Compute the moment around the z-axis
-_ = aileron.T(x)                # Compute the torque
+d3y = aileron.Sy(x)             # Compute the shear force in y
+d3z = aileron.Sz(x)               # Compute the shear force in z
+d2z = aileron.My(x)               # Compute the moment around the y-axis
+d2y = aileron.Mz(x)               # Compute the moment around the z-axis
+d2t = aileron.T(x)                # Compute the torque
 _ = aileron.tau(x)              # Compute the distributed torque
 
 ## Value of the total potential energy
