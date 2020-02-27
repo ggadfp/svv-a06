@@ -36,19 +36,23 @@ jamstr2 = jamstr2.astype(np.float)
 
 # bending displacements
 bendu = np.genfromtxt("B737.rpt", dtype=str, skip_header=20074, skip_footer=(59956 - 26662 - 109), delimiter="")
-bendu = bendu.astype(np.float)
+bendu = bendu.astype(np.float)/1000
 
 # jammed bending displacements
 jambendu = np.genfromtxt("B737.rpt", dtype=str, skip_header=26724, skip_footer=(59956 - 33312 - 90), delimiter="")
-jambendu = jambendu.astype(np.float)
+jambendu = jambendu.astype(np.float)/1000
 
 # jammed displacements
 jamu = np.genfromtxt("B737.rpt", dtype=str, skip_header=33374, skip_footer=(59956 - 39962 - 71), delimiter="")
-jamu = jamu.astype(np.float)
+jamu = jamu.astype(np.float)/1000
 
 # xyz coordinates of nodes
 xyzn = np.genfromtxt("B737.inp", dtype=str, skip_header=9, skip_footer=(14594 - 6598), delimiter=",")
 xyzn = xyzn.astype(np.float)
+xyzn[:,1] = xyzn[:,1]/1000
+xyzn[:,2] = xyzn[:,2]/1000
+xyzn[:,3] = xyzn[:,3]/1000
+
 
 # reaction forces of assembly
 reac = np.genfromtxt("B737.rpt", dtype=str, skip_header=59928, skip_footer=(5), delimiter="")
@@ -552,7 +556,52 @@ jnxu123 = jnxu123[np.argsort(jnxu123[:, 1])]
 ## -------------------Plotting displacements against x location--------------------
 
 import matplotlib.pyplot as plt
-plt.plot(jbnxu123[:,1], jbnxu123[:,2])
+#plt.plot(jbnxu123[:,1], jbnxu123[:,2])
 plt.plot(jbnxu123[:,1], jbnxu123[:,3])
 plt.plot(jbnxu123[:,1], jbnxu123[:,4])
 plt.show()
+
+#------------------Validating
+import Deflection_Copy as sim
+# xloc = np.array([jbnxu123[:,1]])
+# xloc = np.transpose(xloc)
+
+Usim2l = []
+Usim3l = []
+
+for w in range(len(jbnxu123[:,1])):
+    xloc = jbnxu123[w,1]
+    Usim2 = sim.deflection_y(xloc)
+    Usim3 = sim.deflection_z(xloc)
+    Usim2 = float(Usim2)
+    Usim3 = float(Usim3)
+    Usim2l.append(Usim2)
+    Usim3l.append(Usim3)
+    
+
+#print(Usim2l)
+#print(Usim3l)
+#print(jbnxu123[:,3])
+#print(jbnxu123[:,4])
+
+Usim2l = np.array([Usim2l])
+Usim3l = np.array([Usim3l])
+Uval2 = np.array([jbnxu123[:,3]])
+Uval3 = np.array([jbnxu123[:,4]])
+
+Usim2l = np.transpose(Usim2l)
+Usim3l = np.transpose(Usim3l)
+Uval2 = np.transpose(Uval2)
+Uval3 = np.transpose(Uval3)
+
+diff2 = Usim2l - Uval2
+diff3 = Usim3l - Uval3
+fac2 = Usim2l / Uval2
+fac3 = Usim3l / Uval3
+
+print(diff2)
+print(diff3)
+print(fac2)
+print(fac3)
+print(np.amax(fac2))
+print(np.amax(fac3))
