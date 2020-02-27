@@ -12,6 +12,7 @@ import Deflection as d
 import Parameters as c
 
 #%%
+
 def torsion_shear(xloc):
     A1 = 1/2*np.pi*((c.h/2)**2)
     A2 = 1/2*c.h*(c.Ca-c.h/2)
@@ -45,5 +46,6 @@ def torsion_shear(xloc):
 
 def torsion_const():
     return torsion_shear(0.5)[2]
+#It works
 
 
