@@ -277,44 +277,6 @@ def Scz(I_zz):
     
     return eta
 
-eta = Scz(sim.Izz)
-#%%
-
-
-# def len_incl(x):
-#     return x*np.tan(c.beta_rad) - c.h/2
-# def len_incl_2(x):
-#     return -x*np.tan(c.beta_rad) + c.h/2
-
-# def circle(x):
-#     return np.sqrt((c.h/2)**2 - x**2)
-
-
-
-
-# x = np.linspace(0,c.Ca-c.h/2,5000)
-# x_2 = np.linspace(-c.h/2,0,5000)
-
-# mycmap = plt.cm.hot
-# sm = plt.cm.ScalarMappable(cmap=mycmap, norm=plt.Normalize(vmin=0, vmax=8.28568))
-# sm._A = []
-
-# ax, _ = mpl.colorbar.make_axes(plt.gca(), shrink=0.5)
-# cbar = mpl.colorbar.ColorbarBase(ax, cmap=mycmap,
-#                         norm=mpl.colors.Normalize(vmin=0, vmax=8.28568))
-# cbar._A = []
-# # cbar.set_clim(-2.0, 2.0)
-
-# plt.figure(1)
-# plt.scatter(x,len_incl(x),cmap=mycmap,c=qb_incl_1)
-# plt.scatter(x,len_incl_2(x),cmap=mycmap,c=qb_incl_2)
-# plt.scatter(np.zeros(x.shape),nodes_spar[0:-1:2],cmap=mycmap,c=qb_spar)
-# plt.scatter(np.zeros(x.shape),nodes_spar_rev[0:-1:2],cmap=mycmap,c=qb_spar_rev)
-# plt.scatter(x_2,-circle(x_2),cmap=mycmap,c=qb_circle)
-# plt.scatter(x_2,circle(x_2),cmap=mycmap,c=qb_circle_rev)
-# plt.scatter(-np.array(c.Z_locations),c.Y_locations)
-# plt.colorbar(cbar)
-
 #%%
 
 def base_shear_z(I_yy):
@@ -457,17 +419,6 @@ def Scy(I_yy):
     
     return xsi
 
+print(Scy(sim.Iyy))
+print(Scz(sim.Izz))
 
-#%%
-
-# Ic = -c.tsk/(sim.Iyy)
-
-
-# val = Ic*(-sim.z_t*c.lsk - 0.5*np.cos(c.beta_rad)*c.lsk**2)
-# print("approx", test[2][-1] )
-# print(c.beta_deg)
-
-# plt.figure(1)
-# plt.plot(nodes_skin[0:-1:2],test[2])
-# plt.plot(nodes_skin[-1:0:-2],test[3])
-    
