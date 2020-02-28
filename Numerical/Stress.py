@@ -94,12 +94,12 @@ def shear_stress(xloc):
         return q_Sy
 
     q01,q02,J = tor.torsion_shear(xloc)
-    tau_yz_circle = ((shear_z()[0] + shear_y()[0])/c.tsk+q01)
-    tau_yz_circle_rev = ((shear_z()[1] + shear_y()[1])/c.tsk+q01)
-    tau_yz_incl_1 = ((shear_z()[2] + shear_y()[2])/c.tsk+q02)
-    tau_yz_incl_2 = ((shear_z()[3] + shear_y()[3])/c.tsk+q02)
-    tau_yz_spar = ((shear_z()[4] + shear_y()[4])/c.tsp+q02-q01)
-    tau_yz_spar_rev = ((shear_z()[5] + shear_y()[5])/c.tsp+q02-q01)
+    tau_yz_circle = (shear_z()[0] + shear_y()[0]+q01)/c.tsk
+    tau_yz_circle_rev = (shear_z()[1] + shear_y()[1]+q01)/c.tsk
+    tau_yz_incl_1 = (shear_z()[2] + shear_y()[2]+q02)/c.tsk
+    tau_yz_incl_2 = (shear_z()[3] + shear_y()[3]+q02)/c.tsk
+    tau_yz_spar = (shear_z()[4] + shear_y()[4]+q02-q01)/c.tsp
+    tau_yz_spar_rev = (shear_z()[5] + shear_y()[5]+q02-q01)/c.tsp
     
     
     return tau_yz_circle,tau_yz_circle_rev,tau_yz_incl_1,tau_yz_incl_2,tau_yz_spar,tau_yz_spar_rev
@@ -138,10 +138,10 @@ def forLooper(var1,var2,var3,var4,var5,var6):
         
     return var
 
-shearstress = shear_stress(0.5)
-shearflow = shear_flow(0.554)
-bendingstress = bending_stress(0.554)
-vmstress = Von_Mises(0.554)
+# shearstress = shear_stress(0.5)
+shearflow = shear_flow(0.4)
+bendingstress = bending_stress(0.4)
+vmstress = Von_Mises(0.4)
 z_tot = forLooper(z_5,z_1,z_2,z_3,z_4,z_4)
 y_tot = forLooper(y_1,y_2,y_3,y_4,y_5,y_6)
 bending_tot = forLooper(bendingstress[0],bendingstress[1],bendingstress[2],bendingstress[3],bendingstress[4],bendingstress[5])
@@ -149,7 +149,7 @@ shearf_tot = forLooper(shearflow[0],shearflow[1],shearflow[2],shearflow[3],shear
 vm_tot = forLooper(vmstress[0],vmstress[1],vmstress[2],vmstress[3],vmstress[4],vmstress[5])
 
 plt.figure(0)
-plt.title("Bending stress at span-location x = 0.554")
+plt.title("Bending stress at span-location x = 0.4")
 plt.scatter(z_tot,y_tot,s=0.1,c=bending_tot,cmap=plt.cm.jet)
 plt.plot(0,0,'o',c='r',markersize=6,markeredgecolor = 'k')
 plt.xlabel('Z [m]')
@@ -157,10 +157,10 @@ plt.ylabel('Y [m]')
 plt.xlim(-sim.z_t,-c.Ca+c.h/2-sim.z_t)
 plt.colorbar(orientation = 'horizontal', fraction = 0.05)
 plt.axis('equal')
-plt.savefig("Bendingstress_0.554.png")
+plt.savefig("Bendingstress_0.4.png")
 
 plt.figure(1)
-plt.title("Shear flow distribution at span-location x = 0.554")
+plt.title("Shear flow distribution at span-location x = 0.4")
 plt.scatter(z_tot,y_tot,s=0.1,c=shearf_tot,cmap=plt.cm.jet)
 plt.plot(0,0,'o',c='r',markersize=6,markeredgecolor = 'k')
 plt.xlabel('Z [m]')
@@ -168,10 +168,10 @@ plt.ylabel('Y [m]')
 plt.xlim(-sim.z_t,-c.Ca+c.h/2-sim.z_t)
 plt.colorbar(orientation = 'horizontal', fraction = 0.05)
 plt.axis('equal')
-plt.savefig("Shearflow_0.554.png")
+plt.savefig("Shearflow_0.4.png")
 
 plt.figure(2)
-plt.title("Von Mises stress distribution at span-location x = 0.554")
+plt.title("Von Mises stress distribution at span-location x = 0.4")
 plt.scatter(z_tot,y_tot,s=0.1,c=vm_tot,cmap=plt.cm.jet)
 plt.plot(0,0,'o',c='r',markersize=6,markeredgecolor = 'k')
 plt.xlabel('Z [m]')
@@ -179,7 +179,7 @@ plt.ylabel('Y [m]')
 plt.xlim(-sim.z_t,-c.Ca+c.h/2-sim.z_t)
 plt.colorbar(orientation = 'horizontal', fraction = 0.05)
 plt.axis('equal')
-plt.savefig("Vonmises_0.554")
+plt.savefig("Vonmises_0.4.png")
 
 
 
