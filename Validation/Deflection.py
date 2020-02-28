@@ -18,7 +18,7 @@ start_time = time.time()
 #We now wnat to create the 12x12 matrix and the vector of BCs e to solve for the unknown forces thanks to our deflection insights
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
-nodes = 100
+nodes = 10
 plot_points = 51
 J = tor.torsion_unit()
 scz = sd.Scz(sim.Izz)
