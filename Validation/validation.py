@@ -74,6 +74,7 @@ assemb = np.array(assemb)
 
 # nodes in elements
 n_in_e = e[:,[1,2,3,4]]
+#print(n_in_e)
 
 
 # von mises loc1
@@ -122,6 +123,7 @@ for i in range(len(n_in_e)):
 
 
     e_of_n = np.argwhere(n_in_e==i)[:,0] #corresponding elements where a node appears in
+    #print(np.argwhere(n_in_e==i))
     
 
     for j in range(len(e_of_n)):
@@ -526,6 +528,7 @@ for q in range(len(nhinge)):
 
 nxn = np.vstack([nhinge,xhinge])
 
+
 #1
 
 bnxu1 = np.vstack([nxn,bu1list])
@@ -556,7 +559,7 @@ jnxu123 = jnxu123[np.argsort(jnxu123[:, 1])]
 ## -------------------Plotting displacements against x location--------------------
 
 import matplotlib.pyplot as plt
-#plt.plot(jbnxu123[:,1], jbnxu123[:,2])
+plt.plot(jbnxu123[:,1], jbnxu123[:,2])
 plt.plot(jbnxu123[:,1], jbnxu123[:,3])
 plt.plot(jbnxu123[:,1], jbnxu123[:,4])
 plt.show()
@@ -599,9 +602,51 @@ diff3 = Usim3l - Uval3
 fac2 = Usim2l / Uval2
 fac3 = Usim3l / Uval3
 
-print(diff2)
-print(diff3)
-print(fac2)
-print(fac3)
-print(np.amax(fac2))
-print(np.amax(fac3))
+rmse2 = np.sqrt((np.square(Usim2l-Uval2)).mean())
+rmse3 = np.sqrt((np.square(Usim3l-Uval3)).mean())
+
+print(rmse2)
+print(rmse3)
+
+z1 = []
+z5 = []
+z2 = []
+z3 = []
+z4 = []
+
+for t in range(len(jbnxu123[:,1])):
+    x_cind = np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0]
+    #print(np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0])
+
+    z1 = []
+    z5 = []
+    z2 = []
+    z3 = []
+    z4 = []
+
+    for d in range(len(x_cind)):
+
+        if xyzn[x_cind[d],3] < 0 and xyzn[x_cind[d],2] >= 0:
+            z1e = float(xyzn[d,3])
+            z1.append(z1e)
+                
+        elif xyzn[x_cind[d],3] < 0 and xyzn[x_cind[d],2] <= 0:
+            z5e = float(xyzn[d,3])
+            z5.append(z5e)
+                
+        elif xyzn[x_cind[d],3] > 0 and xyzn[x_cind[d],2] <= 0:
+            z2e = float(xyzn[d,3])
+            z2.append(z2e)
+                
+        elif xyzn[x_cind[d],3] > 0 and xyzn[x_cind[d],2] >= 0:
+            z3e = float(xyzn[d,3])
+            z3.append(z3e)
+                
+        elif xyzn[x_cind[d],3] == 0:
+            z4e = float(xyzn[d,3])
+            z4.append(z4e)
+                
+        else:
+            print('bad coding', d)
+
+    #print(z1)
