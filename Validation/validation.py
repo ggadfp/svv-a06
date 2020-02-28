@@ -556,16 +556,9 @@ jnxu123 = np.transpose(jnxu123)
 
 jnxu123 = jnxu123[np.argsort(jnxu123[:, 1])]
 
-## -------------------Plotting displacements against x location--------------------
-
-import matplotlib.pyplot as plt
-plt.plot(jbnxu123[:,1], jbnxu123[:,2])
-plt.plot(jbnxu123[:,1], jbnxu123[:,3])
-plt.plot(jbnxu123[:,1], jbnxu123[:,4])
-plt.show()
-
-#------------------Validating
-import Deflection_Copy as sim
+#------------------Displacements validation---------
+import Deflection as defl
+import Simulation as sim
 # xloc = np.array([jbnxu123[:,1]])
 # xloc = np.transpose(xloc)
 
@@ -574,8 +567,8 @@ Usim3l = []
 
 for w in range(len(jbnxu123[:,1])):
     xloc = jbnxu123[w,1]
-    Usim2 = sim.deflection_y(xloc)
-    Usim3 = sim.deflection_z(xloc)
+    Usim2 = defl.deflection_y(xloc)
+    Usim3 = defl.deflection_z(xloc)
     Usim2 = float(Usim2)
     Usim3 = float(Usim3)
     Usim2l.append(Usim2)
@@ -608,6 +601,37 @@ rmse3 = np.sqrt((np.square(Usim3l-Uval3)).mean())
 print(rmse2)
 print(rmse3)
 
+## -------------------Plotting displacements against x location--------------------
+
+import matplotlib.pyplot as plt
+
+axis = np.linspace(0,sim.la,defl.plot_points)
+
+plt.plot(jbnxu123[:,1], jbnxu123[:,2])
+plt.show()
+
+plt.plot(jbnxu123[:,1], jbnxu123[:,3], 'r', label='Validation')
+plt.scatter(axis, defl.deflectiony_dist,label='A06 Simulation')
+#plt.plot(verif.x, verif.defy_v, 'tab:red',label='Verification code (N=20)')
+plt.title(r'$\nu(x)$')
+plt.ylabel('[m]')
+plt.grid()
+plt.legend(loc="lower right")
+plt.xlabel('Spanwise location [m]')
+plt.show()
+
+plt.plot(jbnxu123[:,1], jbnxu123[:,4], 'r', label='Validation')
+plt.scatter(axis, defl.deflectionz_dist,label='A06 Simulation')
+#plt.plot(verif.x, verif.defz_v, 'tab:red',label='Verification code (N=20)')
+plt.title(r'$\eta(x)$')
+plt.ylabel('[m]')
+plt.grid()
+plt.legend(loc="upper right")
+plt.xlabel('Spanwise location [m]')
+plt.show()
+
+
+#------stresses validation--------------
 z1 = []
 z5 = []
 z2 = []
