@@ -20,10 +20,13 @@ tst = 1.2/1000  # m
 hst = 14./1000   # m
 wst = 18./1000   # m
 nst = 13  # -
-d1 = 0.00681  # m
-d3 = 0.02030  # m
+# d1 = 0.00681  # m
+# d3 = 0.02030  # m
+d1 = 0
+d3 = 0
 theta = m.radians(26)  # rad
 P = 37.9e+3 # N
+# P=0
 
 
 ######################## Part II - bending stiffness calculations #######################################
@@ -136,7 +139,7 @@ aileron.plotw()             # Plot the deflections in z-direction, its derivativ
 aileron.plotphi()           # Plot the twist distribution, the torque and the distributed torque.
 
 ## For custom post-processing of the solution
-x = np.linspace(0,la,num = 101)  # Subsequent functions accept numpy-arrays
+x = np.linspace(0,la,num = 51)  # Subsequent functions accept numpy-arrays
 # Compute the deflections
 defy_v, defz_v, twist_v = aileron.eval(x)       # Compute the three deflections
 d1y, d1z, d1t = aileron.fdeval(x)     # Compute their their first order derivative
@@ -148,7 +151,7 @@ d3z = aileron.Sz(x)               # Compute the shear force in z
 d2z = aileron.My(x)               # Compute the moment around the y-axis
 d2y = aileron.Mz(x)               # Compute the moment around the z-axis
 d2t = aileron.T(x)                # Compute the torque
-_ = aileron.tau(x)              # Compute the distributed torque
+tau_v = aileron.tau(x)              # Compute the distributed torque
 
 ## Value of the total potential energy
 _ = aileron.cPI()               # Compute the total potential energy of the beam for the computed solution.

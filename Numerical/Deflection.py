@@ -19,11 +19,14 @@ start_time = time.time()
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
 nodes = 800
-plot_points = 41
+plot_points = 51
 J = tor.torsion_unit()
 scz = sd.Scz(sim.Izz)
 # sim.s_coeff_load = sim.s_coeff_load * 0
 # sim.s_coeff_torque = sim.s_coeff_torque * 0
+# sim.P = 0
+# sim.d1 = 0
+# sim.d3 = 0
 
 # From BC 1 (check Simulation Plan)
 e[0] = (sim.doubleinteg_spline(sim.s_coeff_load, sim.la, sim.xfull, nodes)+
@@ -459,5 +462,36 @@ axs3[1].set_ylabel(r'$\alpha(x)$''[rad]')
 axs3[1].grid()
 axs3[1].legend(loc="upper right")
 axs3[1].set_xlabel('Spanwise location [m]')
+
+#%%
+# #PLOTTING THE ERROR OF THE DEFLECTION
+# ey_P = np.zeros(len(verif.defz_v))
+# ez_P = np.zeros(len(verif.defz_v))
+# for i in range(len(verif.defz_v)):
+#     ey_P[i] = (-deflectiony_dist[i][0]-verif.defy_v[i])
+#     ez_P[i] = (deflectionz_dist[i][0]-verif.defz_v[i])
+    
+# plt.plot(axis,ey_q,label='Case q')
+# plt.plot(axis,ey_P,label='Case P')
+# plt.grid()
+# plt.legend(loc="lower right")
+# plt.xlabel('Spanwise location [m]')
+# plt.ylabel('Discrepancies in 'r'$\nu(x)$' '[m]')
+# plt.show()
+
+# # print(max(abs(ey))/max(abs(verif.defy_v))*100)
+# # print(max(abs(ez))/max(abs(verif.defz_v))*100)
+
+# #%%
+
+# plt.close('all')
+
+# plt.plot(axis, -np.array(deflectiony_dist),label='A06 Simulation')
+# plt.plot(verif.x, verif.defy_v, 'tab:red',label='Verification code (N=20)')
+# plt.title(r'$\nu(x)$')
+# plt.ylabel('[m]')
+# plt.grid()
+# plt.legend(loc="lower left")
+# plt.xlabel('Spanwise location [m]')
 
 print("Deflection took", time.time() - start_time, "to run")
