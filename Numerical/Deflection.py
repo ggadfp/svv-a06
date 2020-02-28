@@ -11,15 +11,17 @@ import Simulation as sim
 import time
 import CRJ700_VerificiationModel_copy_gabriel as verif
 import J as tor
+import ShearDist as sd
 #%%
 start_time = time.time()
 #[H1y,H2y,H3y,H1z,H2z,H3z,A1,C1,C2,C3,C4,C5]
 #We now wnat to create the 12x12 matrix and the vector of BCs e to solve for the unknown forces thanks to our deflection insights
 mat_defl = np.zeros([12,12])
 e = np.zeros([12,1])
-nodes = 100
-plot_points = 31
+nodes = 800
+plot_points = 41
 J = tor.torsion_unit()
+scz = sd.Scz(sim.Izz)
 # sim.s_coeff_load = sim.s_coeff_load * 0
 # sim.s_coeff_torque = sim.s_coeff_torque * 0
 
@@ -341,8 +343,12 @@ print("BCs+(all y)+Sz+My+dvzdx+deflectionz took", time.time() - start_time, "to 
 def T_span(xloc):
     T = (sim.integ_spline(sim.s_coeff_torque,xloc,sim.xfull)
          +sim.P*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2+sim.xa/2),0)
+         
          -unknowns[6]*sim.h/2*(np.cos(sim.theta_rad)-np.sin(sim.theta_rad))*macaulay(xloc,(sim.x2-sim.xa/2),0)
-         )
+         
+         -unknowns[0]*scz*macaulay(xloc,sim.x1,0)*10
+         -unknowns[1]*scz*macaulay(xloc,sim.x2,0)*10
+         -unknowns[2]*scz*macaulay(xloc,sim.x3,0)*10)
     return T
 
 T_dist = [T_span(i) for i in np.linspace(0,sim.la,plot_points)]
@@ -399,49 +405,59 @@ axs[1, 1].set_xlabel('Spanwise location [m]')
 
 #%%
 
-plt.close('all')
+# plt.close('all')
 axis = np.linspace(0,sim.la,plot_points)
-fig, axs = plt.subplots(2, 2)
+fig2, axs2 = plt.subplots(2, 2)
 plt.suptitle('Deflection in the z-axis',fontsize=20)
 
-axs[0, 0].scatter(axis, Sz_dist,label='A06 Simulation')
-axs[0, 0].plot(verif.x, verif.d3z, 'tab:pink',label='Verification code (N=20)')
-axs[0, 0].set_title(r'$S_{z}(x)$')
-axs[0, 0].set_ylabel('[N]')
-axs[0, 0].legend(loc="upper right")
-axs[0, 0].grid()
+axs2[0, 0].scatter(axis, Sz_dist,label='A06 Simulation')
+axs2[0, 0].plot(verif.x, verif.d3z, 'tab:pink',label='Verification code (N=20)')
+axs2[0, 0].set_title(r'$S_{z}(x)$')
+axs2[0, 0].set_ylabel('[N]')
+axs2[0, 0].legend(loc="upper right")
+axs2[0, 0].grid()
 
-axs[0, 1].scatter(axis, My_dist,label='A06 Simulation')
-axs[0, 1].plot(verif.x, verif.d2z, 'tab:orange',label='Verification code (N=20)')
-axs[0, 1].set_title(r'$M_{y}(x)$')
-axs[0, 1].set_ylabel('[Nm]')
-axs[0, 1].grid()
-axs[0, 1].legend(loc="upper right")
+axs2[0, 1].scatter(axis, My_dist,label='A06 Simulation')
+axs2[0, 1].plot(verif.x, verif.d2z, 'tab:orange',label='Verification code (N=20)')
+axs2[0, 1].set_title(r'$M_{y}(x)$')
+axs2[0, 1].set_ylabel('[Nm]')
+axs2[0, 1].grid()
+axs2[0, 1].legend(loc="upper right")
 
-axs[1, 0].scatter(axis, dvzdx_dist,label='A06 Simulation')
-axs[1, 0].plot(verif.x, verif.d1z, 'tab:green',label='Verification code (N=20)')
-axs[1, 0].set_title(r'$\frac{d\eta(x)}{dx}$')
-axs[1, 0].set_ylabel('[-]')
-axs[1, 0].grid()
-axs[1, 0].legend(loc="upper right")
-axs[1, 0].set_xlabel('Spanwise location [m]')
+axs2[1, 0].scatter(axis, dvzdx_dist,label='A06 Simulation')
+axs2[1, 0].plot(verif.x, verif.d1z, 'tab:green',label='Verification code (N=20)')
+axs2[1, 0].set_title(r'$\frac{d\eta(x)}{dx}$')
+axs2[1, 0].set_ylabel('[-]')
+axs2[1, 0].grid()
+axs2[1, 0].legend(loc="upper right")
+axs2[1, 0].set_xlabel('Spanwise location [m]')
 
 
-axs[1, 1].scatter(axis, deflectionz_dist,label='A06 Simulation')
-axs[1, 1].plot(verif.x, verif.defz_v, 'tab:red',label='Verification code (N=20)')
-axs[1, 1].set_title(r'$\eta(x)$')
-axs[1, 1].set_ylabel('[m]')
-axs[1, 1].grid()
-axs[1, 1].legend(loc="upper right")
-axs[1, 1].set_xlabel('Spanwise location [m]')
+axs2[1, 1].scatter(axis, deflectionz_dist,label='A06 Simulation')
+axs2[1, 1].plot(verif.x, verif.defz_v, 'tab:red',label='Verification code (N=20)')
+axs2[1, 1].set_title(r'$\eta(x)$')
+axs2[1, 1].set_ylabel('[m]')
+axs2[1, 1].grid()
+axs2[1, 1].legend(loc="upper right")
+axs2[1, 1].set_xlabel('Spanwise location [m]')
 
 #%%
-fig3, axs3 = plt.subplots(2,2)
-axs3[0, 0].scatter(axis, T_dist)
-axs3[0, 0].plot(verif.x, verif.d2t)
-axs3[0, 0].set_title('T(x)')
-axs3[0, 1].plot(axis, twist_dist)
-axs3[1, 0].plot(verif.x, verif.twist_v, 'tab:orange')
-axs3[0, 1].set_title('twist(x)')
+axis = np.linspace(0,sim.la,plot_points)
+fig3, axs3 = plt.subplots(2)
+plt.suptitle('Twist around the x-axis',fontsize=20)
+
+axs3[0].scatter(axis, T_dist, label='A06 Simulation')
+axs3[0].plot(verif.x, verif.d2t, 'tab:orange',label='Verification code (N=20)')
+axs3[0].set_ylabel('T(x) [Nm]')
+axs3[0].grid()
+axs3[0].legend(loc="lower right")
+axs3[0].set_xlabel('Spanwise location [m]')
+
+axs3[1].plot(axis, twist_dist, label='A06 Simulation')
+axs3[1].plot(verif.x, verif.twist_v, 'tab:red',label='Verification code (N=20)')
+axs3[1].set_ylabel(r'$\alpha(x)$''[rad]')
+axs3[1].grid()
+axs3[1].legend(loc="upper right")
+axs3[1].set_xlabel('Spanwise location [m]')
 
 print("Deflection took", time.time() - start_time, "to run")

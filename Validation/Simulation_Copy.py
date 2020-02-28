@@ -7,7 +7,7 @@ Created on Sun Feb 16 13:03:57 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
-import readAeroload
+import readAeroload_Copy
 from mpl_toolkits.mplot3d import Axes3D
 import time
 #%%
@@ -126,7 +126,7 @@ Izz = MoI_zz(Y_locations,Boom_area,Asp,tsp,Ask_semi,Ask_incl,tsk,lsk,Ca,h/2,beta
 #%%
 
 
-x,z = readAeroload.meshCreator(Nz,Nx,Ca,la,h)
+x,z = readAeroload_Copy.meshCreator(Nz,Nx,Ca,la,h)
 
 # load,pointapp = readAeroload.zload_zpoint(Nz,Nx,z)
 # torque = np.zeros((Nx,1))

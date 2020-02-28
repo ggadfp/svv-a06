@@ -7,7 +7,7 @@ Created on Thursday 20 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
-import Simulation as sim
+import Simulation_Copy as sim
 import time
 #%%
 start_time = time.time()
@@ -203,7 +203,7 @@ def S_y(xloc):
     
     return S_y
 
-Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,101)]
+# Sy_dist = [S_y(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+Sy took", time.time() - start_time, "to run")
 
 #%%
@@ -222,7 +222,7 @@ def M_z(xloc):
 
 # print(M_z(sim.la))
 
-Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,101)]
+# Mz_dist = [M_z(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+Sy+Mz took", time.time() - start_time, "to run")
 
 #%%
@@ -240,7 +240,7 @@ def dvy_dx(xloc):
     
     return dvy_dx
 
-dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,101)]
+# dvydx_dist = [dvy_dx(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+Sy+Mz+dvydx took", time.time() - start_time, "to run")
 
 #%%
@@ -276,7 +276,7 @@ def S_z(xloc):
           )
     return Sz
 
-Sz_dist = [S_z(i) for i in np.linspace(0,sim.la,101)]
+# Sz_dist = [S_z(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+(all y)+Sz took", time.time() - start_time, "to run")
 
 #%%
@@ -291,7 +291,7 @@ def M_y(xloc):
            - unknowns[6]*np.cos(sim.theta_rad)*macaulay(xloc,(sim.x2-sim.xa/2),1))    
     return M_y
 
-My_dist = [M_y(i) for i in np.linspace(0,sim.la,101)]
+# My_dist = [M_y(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+(all y)+Sz+My took", time.time() - start_time, "to run")
 
 #%%
@@ -308,7 +308,7 @@ def dvz_dx(xloc):
     
     return dvz_dx
 
-dvzdx_dist = [dvz_dx(i) for i in np.linspace(0,sim.la,101)]
+# dvzdx_dist = [dvz_dx(i) for i in np.linspace(0,sim.la,101)]
 print("BCs+(all y)+Sz+My+dvzdx took", time.time() - start_time, "to run")
 
 #%%
@@ -334,24 +334,25 @@ print("BCs+(all y)+Sz+My+dvzdx+deflectionz took", time.time() - start_time, "to 
 #%%
 axis = np.linspace(0,sim.la,101)
 fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(axis, Sy_dist)
-axs[0, 0].set_title('Sy(x)')
-axs[0, 1].plot(axis, Mz_dist, 'tab:orange')
-axs[0, 1].set_title('Mz(x)')
-axs[1, 0].plot(axis, dvydx_dist, 'tab:green')
-axs[1, 0].set_title('dvy/dx (x)')
+# axs[0, 0].plot(axis, Sy_dist)
+# axs[0, 0].set_title('Sy(x)')
+# axs[0, 1].plot(axis, Mz_dist, 'tab:orange')
+# axs[0, 1].set_title('Mz(x)')
+# axs[1, 0].plot(axis, dvydx_dist, 'tab:green')
+# axs[1, 0].set_title('dvy/dx (x)')
 axs[1, 1].plot(axis, deflectiony_dist, 'tab:red')
 axs[1, 1].set_title('deflection y (x)')
 
-#%%
+# #%%
 fig2, axs2 = plt.subplots(2, 2)
-axs2[0, 0].plot(axis, Sz_dist)
-axs2[0, 0].set_title('Sz(x)')
-axs2[0, 1].plot(axis, My_dist, 'tab:orange')
-axs2[0, 1].set_title('My(x)')
-axs2[1, 0].plot(axis, dvzdx_dist, 'tab:green')
-axs2[1, 0].set_title('dvz/dx (x)')
+# axs2[0, 0].plot(axis, Sz_dist)
+# axs2[0, 0].set_title('Sz(x)')
+# axs2[0, 1].plot(axis, My_dist, 'tab:orange')
+# axs2[0, 1].set_title('My(x)')
+# axs2[1, 0].plot(axis, dvzdx_dist, 'tab:green')
+# axs2[1, 0].set_title('dvz/dx (x)')
 axs2[1, 1].plot(axis, deflectionz_dist, 'tab:red')
 axs2[1, 1].set_title('deflection z (x)')
+plt.show()
 
 print("Deflection took", time.time() - start_time, "to run")
