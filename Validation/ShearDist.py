@@ -15,11 +15,11 @@ import matplotlib as mpl
 
 # Calculates the amount of point for each part of the structure
 def node_maker():
-    nodes_skin = np.linspace(0,c.lsk,10001)
-    nodes_circle = np.linspace(0,np.pi/2,10001)
-    nodes_circle_rev = np.linspace(-np.pi/2,0,10001)
-    nodes_spar = np.linspace(0,c.h/2,10001)
-    nodes_spar_rev = np.linspace(0,-c.h/2,10001)
+    nodes_skin = np.linspace(0,c.lsk,41)
+    nodes_circle = np.linspace(0,np.pi/2,41)
+    nodes_circle_rev = np.linspace(-np.pi/2,0,41)
+    nodes_spar = np.linspace(0,c.h/2,41)
+    nodes_spar_rev = np.linspace(0,-c.h/2,41)
     return nodes_skin,nodes_circle,nodes_circle_rev,nodes_spar,nodes_spar_rev
 
 

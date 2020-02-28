@@ -633,7 +633,7 @@ plt.show()
 
 
 #------stresses validation--------------
-from Stress import *
+from Stress_1 import *
 
 rmsc = []
 rmscr = []
@@ -646,7 +646,8 @@ for t in range(len(jbnxu123[:,1])):
     x_cind = np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0]
     #print(np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0])
     xlo = float(jbnxu123[t,1])
-    vm_circle,vm_circle_rev,vm_incl_1,vm_incl_2,vm_spar,vm_spar_rev = Von_Mises(xlo)
+    print(float(jbnxu123[t,1]))
+    
 
     z1 = []
     z5 = []
@@ -702,12 +703,19 @@ for t in range(len(jbnxu123[:,1])):
         else:
             print('bad coding', d)
 
-    vm_val_circ = np.array([vm_val_circ])
-    vm_val_circ_rev = np.array([vm_val_circ_rev])
-    vm_val_incl_1 = np.array([vm_val_incl_1])
-    vm_val_incl_2 = np.array([vm_val_incl_2])
-    vm_val_spar = np.array([vm_val_spar])
-    vm_val_spar_rev = np.array([vm_val_spar_rev])
+    
+    vm_circle,vm_circle_rev,vm_incl_1,vm_incl_2,vm_spar,vm_spar_rev = Von_Mises(xlo-sim.z_t)
+
+    vm_val_circ = np.array(vm_val_circ)
+    vm_val_circ_rev = np.array(vm_val_circ_rev)
+    vm_val_incl_1 = np.array(vm_val_incl_1)
+    vm_val_incl_2 = np.array(vm_val_incl_2)
+    vm_val_spar = np.array(vm_val_spar)
+    vm_val_spar_rev = np.array(vm_val_spar_rev)
+
+    print(vm_circle_rev)
+    print(vm_val_circ_rev)
+    
 
     rmsecirc = np.sqrt((np.square(vm_val_circ-vm_circle)).mean())
     rmsecircr = np.sqrt((np.square(vm_val_circ_rev-vm_circle_rev)).mean())

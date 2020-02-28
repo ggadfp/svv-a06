@@ -19,11 +19,11 @@ from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
 #%%
 
-z_1 = np.linspace(-sim.z_t,-sim.z_t+c.h/2,5000)
-z_2 = np.linspace(-sim.z_t,-c.Ca+c.h/2-sim.z_t,5000)
-z_3 = np.linspace(-c.Ca+c.h/2-sim.z_t,-sim.z_t,5000)
-z_4 = -sim.z_t*np.ones(5000)
-z_5 = np.linspace(-sim.z_t+c.h/2,-sim.z_t,5000)
+z_1 = np.linspace(-sim.z_t,-sim.z_t+c.h/2,20)
+z_2 = np.linspace(-sim.z_t,-c.Ca+c.h/2-sim.z_t,20)
+z_3 = np.linspace(-c.Ca+c.h/2-sim.z_t,-sim.z_t,20)
+z_4 = -sim.z_t*np.ones(20)
+z_5 = np.linspace(-sim.z_t+c.h/2,-sim.z_t,20)
 def circle(z1):
     return -np.sqrt(np.abs((c.h/2)**2 - (z1+sim.z_t)**2))
 def circle_rev(z1):
@@ -33,9 +33,9 @@ def len_incl_1(z1):
 def len_incl_2(z1):
     return -(z1+sim.z_t)*np.tan(c.beta_rad) -c.h/2
 def spar_h(z1):
-    return np.linspace(0,-c.h/2,5000)
+    return np.linspace(0,-c.h/2,20)
 def spar_h_rev(z1):
-    return np.linspace(0,c.h/2,5000)
+    return np.linspace(0,c.h/2,20)
 
 y_1 = circle(z_5)
 y_2 = circle_rev(z_1)
@@ -121,32 +121,32 @@ def Von_Mises(xloc):
 
 #%%
     
-def forLooper(var1,var2,var3,var4,var5,var6):
-    var = []
-    for j in range(5000):
-        var.append(var1[j])
-    for j in range(5000):
-        var.append(var2[j])
-    for j in range(5000):
-        var.append(var3[j])
-    for j in range(5000):
-        var.append(var4[j])
-    for j in range(5000):
-        var.append(var5[j])
-    for j in range(5000):
-        var.append(var6[j])
+# def forLooper(var1,var2,var3,var4,var5,var6):
+#     var = []
+#     for j in range(5000):
+#         var.append(var1[j])
+#     for j in range(5000):
+#         var.append(var2[j])
+#     for j in range(5000):
+#         var.append(var3[j])
+#     for j in range(5000):
+#         var.append(var4[j])
+#     for j in range(5000):
+#         var.append(var5[j])
+#     for j in range(5000):
+#         var.append(var6[j])
         
-    return var
+#     return var
 
-shearstress = shear_stress(0.5)
-shearflow = shear_flow(0.554)
-bendingstress = bending_stress(0.554)
-vmstress = Von_Mises(0.554)
-z_tot = forLooper(z_5,z_1,z_2,z_3,z_4,z_4)
-y_tot = forLooper(y_1,y_2,y_3,y_4,y_5,y_6)
-bending_tot = forLooper(bendingstress[0],bendingstress[1],bendingstress[2],bendingstress[3],bendingstress[4],bendingstress[5])
-shearf_tot = forLooper(shearflow[0],shearflow[1],shearflow[2],shearflow[3],shearflow[4],shearflow[5])
-vm_tot = forLooper(vmstress[0],vmstress[1],vmstress[2],vmstress[3],vmstress[4],vmstress[5])
+# shearstress = shear_stress(0.5)
+# shearflow = shear_flow(0.554)
+# bendingstress = bending_stress(0.554)
+# vmstress = Von_Mises(0.554)
+# z_tot = forLooper(z_5,z_1,z_2,z_3,z_4,z_4)
+# y_tot = forLooper(y_1,y_2,y_3,y_4,y_5,y_6)
+# bending_tot = forLooper(bendingstress[0],bendingstress[1],bendingstress[2],bendingstress[3],bendingstress[4],bendingstress[5])
+# shearf_tot = forLooper(shearflow[0],shearflow[1],shearflow[2],shearflow[3],shearflow[4],shearflow[5])
+# vm_tot = forLooper(vmstress[0],vmstress[1],vmstress[2],vmstress[3],vmstress[4],vmstress[5])
 
 # plt.figure(0)
 # plt.title("Bending stress at span-location x = 0.554")
