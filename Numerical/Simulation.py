@@ -321,32 +321,35 @@ def quadrupleinteg_spline_list(s_coeff,xvec,n):
     fourth_integral = [integ_spline(coeff_t_integral,i,np.linspace(0,la,n+1)) for i in np.linspace(0,la,n+1)]
     return fourth_integral 
 #%%
-start_time = time.time()
+# start_time = time.time()
 
-nodest = 800 #number of interpolating splines
+# nodest = 800 #number of interpolating splines
 
-test_data = load
-coeff_testing = linearspline(Nx,x[0],test_data)
-test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
-integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
-print("Integral 1 took", time.time() - start_time, "to run")
-integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,nodest)
-print("Integral 1+2 took", time.time() - start_time, "to run")
-integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,nodest)
-print("Integral 1+2+3 took", time.time() - start_time, "to run")
-integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,nodest)
+# test_data = -torque
+# coeff_testing = linearspline(Nx,x[0],test_data)
+# test_returned_values = [function_value(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
+# integral_test = [integ_spline(coeff_testing,i,xfull) for i in np.linspace(0,la,nodest+1)]
+# print("Integral 1 took", time.time() - start_time, "to run")
+# integral_test_1 = doubleinteg_spline_list(coeff_testing,xfull,nodest)
+# print("Integral 1+2 took", time.time() - start_time, "to run")
+# integral_test_2 = tripleinteg_spline_list(coeff_testing, xfull,nodest)
+# print("Integral 1+2+3 took", time.time() - start_time, "to run")
+# integral_test_3 = quadrupleinteg_spline_list(coeff_testing, xfull,nodest)
 
-plt.plot(x[0],test_data)
-plt.plot(np.linspace(0,la,len(test_returned_values)),test_returned_values)
-# plt.plot(test_data,np.array(test_data)**2/2)
-plt.plot(np.linspace(0,la,len(integral_test)),integral_test)
-# plt.plot(test_data,np.array(test_data)**3/6)
-plt.plot(np.linspace(0,la,len(integral_test_1)),integral_test_1)
-# plt.plot(test_data,np.array(test_data)**4/24)
-plt.plot(np.linspace(0,la,len(integral_test_2)),integral_test_2)
-# plt.plot(test_data,np.array(test_data)**5/120)
-plt.plot(np.linspace(0,la,len(integral_test_3)),integral_test_3)
-plt.show()
+# plt.plot(x[0],test_data)
+# plt.plot(np.linspace(0,la,len(test_returned_values)),test_returned_values,label=r'$\tau(x)$')
+# # plt.plot(test_data,np.array(test_data)**2/2)
+# plt.plot(np.linspace(0,la,len(integral_test)),integral_test,label=r'$\int \tau(x)$')
+# # plt.plot(test_data,np.array(test_data)**3/6)
+# plt.plot(np.linspace(0,la,len(integral_test_1)),integral_test_1,label=r'$\int\int \tau (x)$')
+# # plt.plot(test_data,np.array(test_data)**4/24)
+# plt.plot(np.linspace(0,la,len(integral_test_2)),integral_test_2,label=r'$\int\int\int \tau (x)$')
+# # plt.plot(test_data,np.array(test_data)**5/120)
+# plt.plot(np.linspace(0,la,len(integral_test_3)),integral_test_3,label=r'$\int\int\int\int \tau (x)$')
+# plt.legend()
+# plt.xlabel('Spanwise location [m]')
+# plt.ylabel('[N]-[Nm]-[N'r'$m^2$'']-[N'r'$m^3$]-[N'r'$m^4$]')
+# plt.show()
 
-print("Simulation.py took", time.time() - start_time, "to run")
+# print("Simulation.py took", time.time() - start_time, "to run")
 
