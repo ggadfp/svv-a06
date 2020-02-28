@@ -457,6 +457,7 @@ m2xyzn_b = np.c_[xyzn,m2avvallis_b]
 m2xyzn_jb = np.c_[xyzn,m2avvallis_jb]
 m2xyzn_j = np.c_[xyzn,m2avvallis_j]
 
+
 # S12 loc1
 s1xyzn_b = np.c_[xyzn,s1avvallis_b]
 s1xyzn_jb = np.c_[xyzn,s1avvallis_jb]
@@ -632,15 +633,20 @@ plt.show()
 
 
 #------stresses validation--------------
-z1 = []
-z5 = []
-z2 = []
-z3 = []
-z4 = []
+from Stress import *
+
+rmsc = []
+rmscr = []
+rmsi1 = []
+rmsi2 = []
+rmssp = []
+rmsspr = []
 
 for t in range(len(jbnxu123[:,1])):
     x_cind = np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0]
     #print(np.argwhere(xyzn[:,1] == jbnxu123[t,1])[:,0])
+    xlo = float(jbnxu123[t,1])
+    vm_circle,vm_circle_rev,vm_incl_1,vm_incl_2,vm_spar,vm_spar_rev = Von_Mises(xlo)
 
     z1 = []
     z5 = []
@@ -648,29 +654,80 @@ for t in range(len(jbnxu123[:,1])):
     z3 = []
     z4 = []
 
+    vm_val_circ = []
+    vm_val_circ_rev = []
+    vm_val_incl_1 = []
+    vm_val_incl_2 = []
+    vm_val_spar = []
+    vm_val_spar_rev = []
+
     for d in range(len(x_cind)):
 
         if xyzn[x_cind[d],3] < 0 and xyzn[x_cind[d],2] >= 0:
             z1e = float(xyzn[d,3])
             z1.append(z1e)
+            vm_val_circ_rev_e = float(m1xyzn_jb[d,4])
+            vm_val_circ_rev.append(vm_val_circ_rev_e)
                 
         elif xyzn[x_cind[d],3] < 0 and xyzn[x_cind[d],2] <= 0:
             z5e = float(xyzn[d,3])
             z5.append(z5e)
+            vm_val_circ_e = float(m1xyzn_jb[d,4])
+            vm_val_circ.append(vm_val_circ_e)
                 
         elif xyzn[x_cind[d],3] > 0 and xyzn[x_cind[d],2] <= 0:
             z2e = float(xyzn[d,3])
             z2.append(z2e)
+            vm_val_incl_1_e = float(m1xyzn_jb[d,4])
+            vm_val_incl_1.append(vm_val_incl_1_e)
                 
         elif xyzn[x_cind[d],3] > 0 and xyzn[x_cind[d],2] >= 0:
             z3e = float(xyzn[d,3])
             z3.append(z3e)
+            vm_val_incl_2_e = float(m1xyzn_jb[d,4])
+            vm_val_incl_2.append(vm_val_incl_2_e)
                 
-        elif xyzn[x_cind[d],3] == 0:
+        elif xyzn[x_cind[d],3] == 0 and xyzn[x_cind[d],2] <= 0:
             z4e = float(xyzn[d,3])
             z4.append(z4e)
+            vm_val_spar_e = float(m1xyzn_jb[d,4])
+            vm_val_spar.append(vm_val_spar_e)
+
+        elif xyzn[x_cind[d],3] == 0 and xyzn[x_cind[d],2] <= 0:
+            z4e = float(xyzn[d,3])
+            z4.append(z4e)
+            vm_val_spar_rev_e = float(m1xyzn_jb[d,4])
+            vm_val_spar_rev.append(vm_val_spar_rev_e)
                 
         else:
             print('bad coding', d)
+
+    vm_val_circ = np.array([vm_val_circ])
+    vm_val_circ_rev = np.array([vm_val_circ_rev])
+    vm_val_incl_1 = np.array([vm_val_incl_1])
+    vm_val_incl_2 = np.array([vm_val_incl_2])
+    vm_val_spar = np.array([vm_val_spar])
+    vm_val_spar_rev = np.array([vm_val_spar_rev])
+
+    rmsecirc = np.sqrt((np.square(vm_val_circ-vm_circle)).mean())
+    rmsecircr = np.sqrt((np.square(vm_val_circ_rev-vm_circle_rev)).mean())
+    rmsein1 = np.sqrt((np.square(vm_val_incl_1-vm_incl_1)).mean())
+    rmsein2 = np.sqrt((np.square(vm_val_incl_2-vm_incl_2)).mean())
+    rmsesp = np.sqrt((np.square(vm_val_spar-vm_spar)).mean())
+    rmsespr = np.sqrt((np.square(vm_val_spar_rev-vm_spar_rev)).mean())
+        
+    rmsc.append(rmsecirc)
+    rmscr.append(rmsecircr)
+    rmsi1.append(rmsein1)
+    rmsi2.append(rmsein2)
+    rmssp.append(rmsesp)
+    rmsspr.append(rmsespr)
+
+print(rmsc)
+    
+
+    
+    
+    
 
     #print(z1)
