@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import Simulation as sim
 import time
-import CRJ700_VerificiationModel_copy_gabriel as verif
+# import CRJ700_VerificiationModel_copy_gabriel as verif
 import J as tor
 import ShearDist as sd
 #%%
@@ -189,6 +189,7 @@ print("BC1+2+3+4+5+6+7+8+9+10+11+12 took", time.time() - start_time, "to run")
 
 #SOLVING FOR ALL THE UNKNOWN FORCES
 unknowns = np.linalg.inv(mat_defl).dot(e)
+print(unknowns)
 
 #%%
 def macaulay(xloc,start,n):
@@ -370,98 +371,98 @@ def twist(xloc):
 twist_dist = [twist(i) for i in np.linspace(0,sim.la,plot_points)]
 
 #%%
-plt.close('all')
-axis = np.linspace(0,sim.la,plot_points)
-fig, axs = plt.subplots(2, 2)
-plt.suptitle('Deflection in the y-axis',fontsize=20)
-
-axs[0, 0].scatter(axis, Sy_dist,label='A06 Simulation')
-axs[0, 0].plot(verif.x, verif.d3y, 'tab:pink',label='Verification code (N=20)')
-axs[0, 0].set_title(r'$S_{y}(x)$')
-axs[0, 0].set_ylabel('[N]')
-axs[0, 0].legend(loc="upper right")
-axs[0, 0].grid()
-
-axs[0, 1].scatter(axis, Mz_dist,label='A06 Simulation')
-axs[0, 1].plot(verif.x, verif.d2y, 'tab:orange',label='Verification code (N=20)')
-axs[0, 1].set_title(r'$M_{z}(x)$')
-axs[0, 1].set_ylabel('[Nm]')
-axs[0, 1].grid()
-axs[0, 1].legend(loc="lower right")
-
-axs[1, 0].scatter(axis, dvydx_dist,label='A06 Simulation')
-axs[1, 0].plot(verif.x, verif.d1y, 'tab:green',label='Verification code (N=20)')
-axs[1, 0].set_title(r'$\frac{d\nu(x)}{dx}$')
-axs[1, 0].set_ylabel('[-]')
-axs[1, 0].grid()
-axs[1, 0].legend(loc="upper right")
-axs[1, 0].set_xlabel('Spanwise location [m]')
-
-
-axs[1, 1].scatter(axis, deflectiony_dist,label='A06 Simulation')
-axs[1, 1].plot(verif.x, verif.defy_v, 'tab:red',label='Verification code (N=20)')
-axs[1, 1].set_title(r'$\nu(x)$')
-axs[1, 1].set_ylabel('[m]')
-axs[1, 1].grid()
-axs[1, 1].legend(loc="lower right")
-axs[1, 1].set_xlabel('Spanwise location [m]')
-
-#%%
-
 # plt.close('all')
-axis = np.linspace(0,sim.la,plot_points)
-fig2, axs2 = plt.subplots(2, 2)
-plt.suptitle('Deflection in the z-axis',fontsize=20)
+# axis = np.linspace(0,sim.la,plot_points)
+# fig, axs = plt.subplots(2, 2)
+# plt.suptitle('Deflection in the y-axis',fontsize=20)
 
-axs2[0, 0].scatter(axis, Sz_dist,label='A06 Simulation')
-axs2[0, 0].plot(verif.x, verif.d3z, 'tab:pink',label='Verification code (N=20)')
-axs2[0, 0].set_title(r'$S_{z}(x)$')
-axs2[0, 0].set_ylabel('[N]')
-axs2[0, 0].legend(loc="upper right")
-axs2[0, 0].grid()
+# axs[0, 0].scatter(axis, Sy_dist,label='A06 Simulation')
+# axs[0, 0].plot(verif.x, verif.d3y, 'tab:pink',label='Verification code (N=20)')
+# axs[0, 0].set_title(r'$S_{y}(x)$')
+# axs[0, 0].set_ylabel('[N]')
+# axs[0, 0].legend(loc="upper right")
+# axs[0, 0].grid()
 
-axs2[0, 1].scatter(axis, My_dist,label='A06 Simulation')
-axs2[0, 1].plot(verif.x, verif.d2z, 'tab:orange',label='Verification code (N=20)')
-axs2[0, 1].set_title(r'$M_{y}(x)$')
-axs2[0, 1].set_ylabel('[Nm]')
-axs2[0, 1].grid()
-axs2[0, 1].legend(loc="upper right")
+# axs[0, 1].scatter(axis, Mz_dist,label='A06 Simulation')
+# axs[0, 1].plot(verif.x, verif.d2y, 'tab:orange',label='Verification code (N=20)')
+# axs[0, 1].set_title(r'$M_{z}(x)$')
+# axs[0, 1].set_ylabel('[Nm]')
+# axs[0, 1].grid()
+# axs[0, 1].legend(loc="lower right")
 
-axs2[1, 0].scatter(axis, dvzdx_dist,label='A06 Simulation')
-axs2[1, 0].plot(verif.x, verif.d1z, 'tab:green',label='Verification code (N=20)')
-axs2[1, 0].set_title(r'$\frac{d\eta(x)}{dx}$')
-axs2[1, 0].set_ylabel('[-]')
-axs2[1, 0].grid()
-axs2[1, 0].legend(loc="upper right")
-axs2[1, 0].set_xlabel('Spanwise location [m]')
+# axs[1, 0].scatter(axis, dvydx_dist,label='A06 Simulation')
+# axs[1, 0].plot(verif.x, verif.d1y, 'tab:green',label='Verification code (N=20)')
+# axs[1, 0].set_title(r'$\frac{d\nu(x)}{dx}$')
+# axs[1, 0].set_ylabel('[-]')
+# axs[1, 0].grid()
+# axs[1, 0].legend(loc="upper right")
+# axs[1, 0].set_xlabel('Spanwise location [m]')
 
 
-axs2[1, 1].scatter(axis, deflectionz_dist,label='A06 Simulation')
-axs2[1, 1].plot(verif.x, verif.defz_v, 'tab:red',label='Verification code (N=20)')
-axs2[1, 1].set_title(r'$\eta(x)$')
-axs2[1, 1].set_ylabel('[m]')
-axs2[1, 1].grid()
-axs2[1, 1].legend(loc="upper right")
-axs2[1, 1].set_xlabel('Spanwise location [m]')
+# axs[1, 1].scatter(axis, deflectiony_dist,label='A06 Simulation')
+# axs[1, 1].plot(verif.x, verif.defy_v, 'tab:red',label='Verification code (N=20)')
+# axs[1, 1].set_title(r'$\nu(x)$')
+# axs[1, 1].set_ylabel('[m]')
+# axs[1, 1].grid()
+# axs[1, 1].legend(loc="lower right")
+# axs[1, 1].set_xlabel('Spanwise location [m]')
 
-#%%
-axis = np.linspace(0,sim.la,plot_points)
-fig3, axs3 = plt.subplots(2)
-plt.suptitle('Twist around the x-axis',fontsize=20)
+# #%%
 
-axs3[0].scatter(axis, T_dist, label='A06 Simulation')
-axs3[0].plot(verif.x, verif.d2t, 'tab:orange',label='Verification code (N=20)')
-axs3[0].set_ylabel('T(x) [Nm]')
-axs3[0].grid()
-axs3[0].legend(loc="lower right")
-axs3[0].set_xlabel('Spanwise location [m]')
+# # plt.close('all')
+# axis = np.linspace(0,sim.la,plot_points)
+# fig2, axs2 = plt.subplots(2, 2)
+# plt.suptitle('Deflection in the z-axis',fontsize=20)
 
-axs3[1].plot(axis, twist_dist, label='A06 Simulation')
-axs3[1].plot(verif.x, verif.twist_v, 'tab:red',label='Verification code (N=20)')
-axs3[1].set_ylabel(r'$\alpha(x)$''[rad]')
-axs3[1].grid()
-axs3[1].legend(loc="upper right")
-axs3[1].set_xlabel('Spanwise location [m]')
+# axs2[0, 0].scatter(axis, Sz_dist,label='A06 Simulation')
+# axs2[0, 0].plot(verif.x, verif.d3z, 'tab:pink',label='Verification code (N=20)')
+# axs2[0, 0].set_title(r'$S_{z}(x)$')
+# axs2[0, 0].set_ylabel('[N]')
+# axs2[0, 0].legend(loc="upper right")
+# axs2[0, 0].grid()
+
+# axs2[0, 1].scatter(axis, My_dist,label='A06 Simulation')
+# axs2[0, 1].plot(verif.x, verif.d2z, 'tab:orange',label='Verification code (N=20)')
+# axs2[0, 1].set_title(r'$M_{y}(x)$')
+# axs2[0, 1].set_ylabel('[Nm]')
+# axs2[0, 1].grid()
+# axs2[0, 1].legend(loc="upper right")
+
+# axs2[1, 0].scatter(axis, dvzdx_dist,label='A06 Simulation')
+# axs2[1, 0].plot(verif.x, verif.d1z, 'tab:green',label='Verification code (N=20)')
+# axs2[1, 0].set_title(r'$\frac{d\eta(x)}{dx}$')
+# axs2[1, 0].set_ylabel('[-]')
+# axs2[1, 0].grid()
+# axs2[1, 0].legend(loc="upper right")
+# axs2[1, 0].set_xlabel('Spanwise location [m]')
+
+
+# axs2[1, 1].scatter(axis, deflectionz_dist,label='A06 Simulation')
+# axs2[1, 1].plot(verif.x, verif.defz_v, 'tab:red',label='Verification code (N=20)')
+# axs2[1, 1].set_title(r'$\eta(x)$')
+# axs2[1, 1].set_ylabel('[m]')
+# axs2[1, 1].grid()
+# axs2[1, 1].legend(loc="upper right")
+# axs2[1, 1].set_xlabel('Spanwise location [m]')
+
+# #%%
+# axis = np.linspace(0,sim.la,plot_points)
+# fig3, axs3 = plt.subplots(2)
+# plt.suptitle('Twist around the x-axis',fontsize=20)
+
+# axs3[0].scatter(axis, T_dist, label='A06 Simulation')
+# axs3[0].plot(verif.x, verif.d2t, 'tab:orange',label='Verification code (N=20)')
+# axs3[0].set_ylabel('T(x) [Nm]')
+# axs3[0].grid()
+# axs3[0].legend(loc="lower right")
+# axs3[0].set_xlabel('Spanwise location [m]')
+
+# axs3[1].plot(axis, twist_dist, label='A06 Simulation')
+# axs3[1].plot(verif.x, verif.twist_v, 'tab:red',label='Verification code (N=20)')
+# axs3[1].set_ylabel(r'$\alpha(x)$''[rad]')
+# axs3[1].grid()
+# axs3[1].legend(loc="upper right")
+# axs3[1].set_xlabel('Spanwise location [m]')
 
 #%%
 # #PLOTTING THE ERROR OF THE DEFLECTION
